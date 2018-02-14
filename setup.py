@@ -28,7 +28,7 @@ setup(
     description='ISA open-souce experimental library for natural language processing (NLP). Implements and wraps many linguistic parsers.',
     author='ISA RAS',
     author_email='',
-    packages=['isanlp'] + ['isanlp.' + p for p in find_packages('isanlp')],
+    packages=['/src/isanlp'] + ['/src/isanlp.' + p for p in find_packages('/src/isanlp')],
     #packages = ['isanlp'],
     #package_dir={'': 'isanlp'},
 #    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
