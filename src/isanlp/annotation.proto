@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+
+message AnnMapItem {
+   string key = 1;
+   google.protobuf.Any value = 2;
+}
+
+
+message AnnotationMap {
+   repeated AnnMapItem data = 1;
+}
+
+
+message AnnotationList {
+   repeated google.protobuf.Any data = 1;
+}
+
+
+message AnnotationTuple {
+   AnnotationList data = 1;
+}
+
+
+message Span {
+  int32 begin = 1;
+  int32 end = 2;
+}
+
+
+message TaggedSpan {
+  Span span = 1;
+  string tag = 2;
+}
+
+
+message TaggedRelation {
+  int32 head = 1;
+  int32 dep = 2;
+  string tag = 3;
+}
+
+
+message Token {
+  Span span = 1;
+  string text = 2;
+}
+
+
+message Sentence {
+  int32 begin = 1;
+  int32 end = 2;
+}
+
+
+message LngString {
+  string value = 1;
+}
+
+
+message LngInt {
+  int32 value = 1;
+}
+
+
+message WordSynt {
+  int32 parent = 1;
+  string link_name = 2;
+}
+
+
+message ProcessRequest {
+  string pipeline_name = 1;
+  google.protobuf.Any input_annotations = 2;
+}
+
+
+message ProcessReply {
+  AnnotationMap output_annotations = 1;
+}
+
+
+message RegisteredPipelinesReply {
+  repeated string pipeline_names = 1;
+}
+
+
+message Void {
+}
+
+
+message Event {
+  AnnotationTuple pred = 1;
+  AnnotationList args = 2;
+}
+
+
+service NlpService {
+  // Process data in a pipeline.
+  rpc process (ProcessRequest) returns (ProcessReply) {}
+  
+  // Get registered pipelines.
+  rpc get_registered_pipelines (Void) returns (RegisteredPipelinesReply) {}
+  
+}
