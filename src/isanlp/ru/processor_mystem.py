@@ -37,8 +37,9 @@ class ProcessorMystem:
                 mystem_token_text = mystem_token['text'].strip()
                 if mystem_token_text:
                     if 'analysis' in mystem_token:
-                        lemma = mystem_token['analysis'][0]['lex']
-                        postag = mystem_token['analysis'][0]['gr']
+                        an = mystem_token['analysis']
+                        lemma = an[0]['lex'] if an else ''
+                        postag = an[0]['gr'] if an else ''
                     else:
                         lemma = mystem_token_text
                         postag = ''
