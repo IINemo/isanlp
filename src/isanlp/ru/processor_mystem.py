@@ -36,16 +36,19 @@ class ProcessorMystem:
             for mystem_token in mystem_result:
                 mystem_token_text = mystem_token['text'].strip()
                 if mystem_token_text:
-                    if 'analysis' in mystem_token:
-                        an = mystem_token['analysis']
-                        lemma = an[0]['lex'] if an else ''
-                        postag = an[0]['gr'] if an else ''
-                    else:
-                        lemma = mystem_token_text
-                        postag = ''
-                        
-                    lemma_sent_result.append(lemma)
-                    postag_sent_result.append(postag)
+                    sub_tokens = mystem_token_text.split(' ')
+                    for i in range(len(sub_tokens)):
+                        if 'analysis' in mystem_token and mystem_token['analysis']:
+                            an = mystem_token['analysis']
+                            lemma = an[0]['lex'].split(' ')[i]
+                            #lemma = an[0]['lex'] if an else ''
+                            postag = an[0]['gr'] if an else ''
+                        else:
+                            lemma = mystem_token_text
+                            postag = ''
+
+                        lemma_sent_result.append(lemma)
+                        postag_sent_result.append(postag)
                     
             lemma_result.append(lemma_sent_result)
             postag_result.append(postag_sent_result)

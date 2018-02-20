@@ -102,7 +102,7 @@ def parse_mystem(mystem_str):
     
     feats = {'fPOS' : pos_tag}
     for item in lexeme:
-        if item:
+        if item and item in conv_rev:
             label = conv_rev[item]
             feats[label] = item
     
@@ -111,7 +111,7 @@ def parse_mystem(mystem_str):
     for form in wordforms[:1]:
         vals = form.split(',')
         for item in vals:
-            if item:
+            if item and item in conv_rev:
                 label = conv_rev[item]
                 feats[label] = item
         
@@ -137,6 +137,7 @@ class ConverterMystemToUd:
     Can be used inside a common pipeline.
     """
     
+    #TODO: split into two results
     def __call__(self, mystem_postags):
         result = list()
         for sent in mystem_postags:

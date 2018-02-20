@@ -40,3 +40,19 @@ class ProcessorRemote:
         
         response = self._stub.process(request)
         return annotation_from_protobuf.convert_annotation(response.output_annotations)
+    
+    def __getstate__(self):
+        # capture what is normally pickled
+        state = self.__dict__
+        # replace the `value` key (now an EnumValue instance), with it's index:
+        del state['_channel']
+        # what we return here will be stored in the pickle
+        del state['_stub']
+        return state
+    
+    def __setstate__(self, newstate):
+        # re-create the EnumState instance based on the stored index
+        newstate['_channel'] = grpc.insecure_channel('{}:{}'.format(newstate['_host'], newstate['_port']))
+        newstate['_stub'] = annotation_pb2_grpc.NlpServiceStub(newstate['_channel'])
+        # re-instate our __dict__ state from the pickled state
+        self.__dict__.update(newstate)
