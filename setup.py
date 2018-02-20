@@ -20,7 +20,6 @@ def read(*names, **kwargs):
         encoding=kwargs.get('encoding', 'utf8')
     ).read()
 
-print(find_packages('isanlp'))
 
 setup(
     name='isanlp',
@@ -28,12 +27,11 @@ setup(
     description='ISA open-souce experimental library for natural language processing (NLP). Implements and wraps many linguistic parsers.',
     author='ISA RAS',
     author_email='',
-    packages=['/src/isanlp'] + ['/src/isanlp.' + p for p in find_packages('/src/isanlp')],
-    #packages = ['isanlp'],
-    #package_dir={'': 'isanlp'},
-#    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    packages=['isanlp', 'isanlp.ru', 'isanlp.en'],
+#    packages=['isanlp'] + ['isanlp.' + p for p in find_packages('isanlp')],
     include_package_data=True,
     zip_safe=False,
+    package_dir={'' : 'src'},
     install_requires=[
     ]
 )
