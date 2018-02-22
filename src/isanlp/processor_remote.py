@@ -5,6 +5,7 @@ from . import annotation_from_protobuf
 
 import grpc
 from google.protobuf.any_pb2 import Any
+import copy
 
 
 class ProcessorRemote:
@@ -43,7 +44,8 @@ class ProcessorRemote:
     
     def __getstate__(self):
         # capture what is normally pickled
-        state = self.__dict__
+        #state = copy.deepcopy(self.__dict__)
+        state = self.__dict__.copy()
         # replace the `value` key (now an EnumValue instance), with it's index:
         del state['_channel']
         # what we return here will be stored in the pickle
@@ -52,7 +54,9 @@ class ProcessorRemote:
     
     def __setstate__(self, newstate):
         # re-create the EnumState instance based on the stored index
-        newstate['_channel'] = grpc.insecure_channel('{}:{}'.format(newstate['_host'], newstate['_port']))
-        newstate['_stub'] = annotation_pb2_grpc.NlpServiceStub(newstate['_channel'])
+        #newstate['_channel'] = grpc.insecure_channel('{}:{}'.format(newstate['_host'], newstate['_port']))
+        self._channel = grpc.insecure_channel('{}:{}'.format(newstate['_host'], newstate['_port']))
+        #newstate['_stub'] = annotation_pb2_grpc.NlpServiceStub(newstate['_channel'])
+        self._stub = annotation_pb2_grpc.NlpServiceStub(self._channel)
         # re-instate our __dict__ state from the pickled state
         self.__dict__.update(newstate)
