@@ -1,9 +1,17 @@
 from multiprocessing import current_process, Pool
 import math
+import tqdm
 
 
 def _process_chunk(chunk, proc):
-    return [proc(doc) for doc in chunk]
+    result = []
+    for doc_num, doc in enumerate(chunk):
+        result.append(proc(doc))
+        if (doc_num % 100) == 0:
+            print('{}: {:.2f}%'.format(current_process(), 
+                                       (doc_num / len(chunk)) * 100))
+    
+    return result
 
     
 def split_equally(lst, nparts):
@@ -27,23 +35,63 @@ def split_equally(lst, nparts):
     return chunks
     
 
-class WrapperMultiProcessDocument:
-    def __init__(self, processors):
-        self._processors = processors
-        self._pool = Pool(len(self._processors))
+global_proc = None
+def _initialize(processors):
+    global global_proc
+    global_proc = processors[current_process()._identity[0] % len(processors)]
+
     
-    def __call__(self, args):
-        chunks = split_equally(args, len(self._processors))
+def _perform_analysis(arg):
+    return arg[0], global_proc(arg[1])
+
+
+class WrapperMultiProcessDocument:
+    def __init__(self, processors, 
+                 ptype = 'balanced', 
+                 chunksize = 10):
+        """
+        Args:
+            processors(list): 
+            ptype(str): balanced, even
+        """
         
-        async_results = []
-        for i in range(len(chunks)):
-            async_results.append(self._pool.apply_async(_process_chunk, 
-                                                        args = (chunks[i], 
-                                                                self._processors[i])))
+        self._processors = processors
+        self._ptype = ptype
+        self._chunksize = chunksize
         
-        result = []
-        for i in range(len(chunks)):
-            res = async_results[i].get()
-            result += res
-            
-        return result
+        if self._ptype == 'balanced':
+            self._pool = Pool(len(self._processors), 
+                              initializer = _initialize, 
+                              initargs = (self._processors,))
+        elif self._ptype == 'even':
+            self._pool = Pool(len(self._processors))
+        else:
+            raise ValueError()
+        
+    
+    def __call__(self, lst):
+        if self._ptype == 'balanced':
+            final_res = [None for i in range(len(lst))]
+            for i, res in tqdm.tqdm(self._pool.imap_unordered(_perform_analysis, 
+                                                              list(enumerate(lst)),
+                                                              self._chunksize), 
+                                    total=len(lst)):
+                final_res[i] = res
+
+            return final_res
+        elif self._ptype == 'even':
+            chunks = split_equally(lst, len(self._processors))
+        
+            async_results = []
+            for i in range(len(chunks)):
+                async_results.append(self._pool.apply_async(_process_chunk, 
+                                                            args = (chunks[i], 
+                                                                    self._processors[i])))
+
+            result = []
+            for i in range(len(chunks)):
+                res = async_results[i].get()
+                result += res
+
+            return result
+    
