@@ -137,11 +137,20 @@ class ConverterMystemToUd:
     Can be used inside a common pipeline.
     """
     
-    #TODO: split into two results
     def __call__(self, mystem_postags):
-        result = list()
+        result_postags = list()
+        result_morph = list()
         for sent in mystem_postags:
-            result.append([convert_mystem_to_ud(postag) for postag in sent])
+            result_sent_postag = []
+            result_sent_morph = []
+            for postag in sent:
+                cv = convert_mystem_to_ud(postag)
+                result_sent_postag.append(cv.get('fPOS', ''))
+                result_sent_morph.append(cv)
+            
+            result_postags.append(result_sent_postag)
+            result_morph.append(result_sent_morph)
         
-        return result
+        return {'postag' : result_postags, 
+                'morph' : result_morph}
     
