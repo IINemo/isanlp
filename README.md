@@ -116,7 +116,7 @@ The library provides a docker container inemo/isanlp that contains all required 
 
 ``` docker run --rm -p 3333:3333 inemo/isanlp ```
 
-You can also run a custom processor insed the container using the simple command:
+You can also run a custom processor instead the container using the simple command:
 
 ``` docker run --rm -p 3333:3333 -v <custom module dir>:/src/custom_modules \ 
            <some repo>/isanlp /start.py \
