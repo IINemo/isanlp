@@ -19,7 +19,7 @@ In the basic use case, the library depends only on grpc library.
 # Basic usage
 ```python
 from isanlp import ProcessorRemote
-ppl = ProcessorRemote(host = 'localhost', port = 33333, pipeline_name = '')
+ppl = ProcessorRemote(host='localhost', port=33333, pipeline_name='default')
 
 text_ru = 'Мама мыла раму'
 annotations = ppl(text_ru)
@@ -92,14 +92,14 @@ You also should specify the label, which would be used to save your results in a
 Pipelines also can include other pipelines and remote processors:
 
 ```python
-ppl = PipelineCommon([(ProcessorRemote(host = 'some host', port = 8207),
+ppl = PipelineCommon([(ProcessorRemote(host='some host', port=8207),
                       ['text'],
                       {'tokens' : 'tokens',
                        'sentences' : 'sentences',
                        'lemma' : 'lemma',
                        'postag' : 'postag',
                        'morph' : 'morph'}),
-                     (ProcessorSyntaxNetRemote(host = 'other host', port = 7678),
+                     (ProcessorSyntaxNetRemote(host='other host', port=7678),
                       ['sentences'],
                       {'syntax_dep_tree' : 'syntax_dep_tree'})])
 ```
