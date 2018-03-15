@@ -126,9 +126,14 @@ You can also run a custom processor instead the container using the simple comma
 # Additional modules for IsaNLP.
 
 The IsaNLP library provides several core routines, processors, and models that do not need many dependencies. However, the IsaNLP framework is significantly broader. It encompasses many other easy-to-use packages for various types of NLP. Currently they include:
-1. isanlp_srl_framebank (not published yet) -- the neural-based SRL parser for Russian based on well-known FrameBank corpus. The package provides the python 3 library for final users, trained models (Shelmanov and Devyatkin), a docker container inemo/isanlp_srl_framebank with ready-to-use NLP service, and a playground for training new deep learning models (jupyter notebook).
+1. isanlp_srl_framebank (not published yet) -- the neural-based SRL parser for Russian based on well-known [FrameBank](https://github.com/olesar/framebank) corpus. The package provides the python 3 library for final users, trained models (Shelmanov and Devyatkin), a docker container inemo/isanlp_srl_framebank with ready-to-use NLP service, and a playground for training new deep learning models (jupyter notebook).
 2. [isanlp_deep_srl](https://github.com/IINemo/isanlp_deep_srl) -- the docker container [inemo/isanlp_deep_srl](https://hub.docker.com/r/inemo/isanlp_deep_srl/) with ready-to-use SRL service for English. The parser and models is created by [Deep SRL project](https://github.com/luheng/deep_srl) and adopted for IsaNLP framework.
 3. [isanlp_parser_conll2008](https://github.com/IINemo/isanlp_parser_conll2008/) -- the docker container [inemo/isanlp_parser_conll2008](https://hub.docker.com/r/inemo/isanlp_parser_conll2008/) with ready-to-use dependency parsing service for English. The parser is based on MaltParser and CONLL-2008/2009 syntactic annotation (semantically rich). The model is developed by [Surdenau et al.](http://www.surdeanu.info/mihai/ensemble/)
-4. [docker-syntaxnet](https://github.com/IINemo/docker-syntaxnet) -- the docker containers with Google's [SyntaxNet]() for [English](https://hub.docker.com/r/inemo/syntaxnet_eng/), [Russian](https://hub.docker.com/r/inemo/syntaxnet_rus/), and [Italian](https://hub.docker.com/r/inemo/syntaxnet_ita/). The containers provides easy-to-use gRPC service for dependency parsing, pos-tagging, and morphology analysis.
+4. [docker-syntaxnet](https://github.com/IINemo/docker-syntaxnet) -- the docker containers with Google's [SyntaxNet](https://github.com/tensorflow/models/tree/master/research/syntaxnet) for [English](https://hub.docker.com/r/inemo/syntaxnet_eng/), [Russian](https://hub.docker.com/r/inemo/syntaxnet_rus/), and [Italian](https://hub.docker.com/r/inemo/syntaxnet_ita/). The containers provides easy-to-use gRPC service for dependency parsing, pos-tagging, and morphology analysis.
 
-# To be done:
+# Roadmap:
+1. Publish SRL parser for Russian.
+2. Expand documentation.
+3. Automatic tests.
+4. Sentiment analysis for English and Russian.
+5. Anaphora resolution for English and Russian.
