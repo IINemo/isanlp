@@ -77,5 +77,6 @@ def convert_annotation(ling_ann):
     elif type(ling_ann) is ann.Event:
         return convert_event(ling_ann)
     else:
+        print(type(ling_ann))
         raise TypeError()
         

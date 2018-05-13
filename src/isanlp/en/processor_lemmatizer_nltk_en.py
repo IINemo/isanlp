@@ -41,7 +41,7 @@ class ProcessorLemmatizerNltkEn:
         
         result = []
         for text_sent, postag_sent in zip(sentences, postags):
-            result.append([self._nltk_lmtzr.lemmatize(word.text, get_wordnet_pos(postag)) 
+            result.append([self._nltk_lmtzr.lemmatize(word.text.lower(), get_wordnet_pos(postag)) 
                            for (word, postag) in zip(CSentence(tokens, text_sent), postag_sent)])
         
         return result
