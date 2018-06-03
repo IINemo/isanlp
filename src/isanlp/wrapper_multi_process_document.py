@@ -46,9 +46,11 @@ def _perform_analysis(arg):
 
 
 class WrapperMultiProcessDocument:
-    def __init__(self, processors, 
-                 ptype = 'balanced', 
-                 chunksize = 10):
+    def __init__(self, 
+                 processors, 
+                 ptype='balanced', 
+                 chunksize=10,
+                 progress_bar=tqdm.tqdm):
         """
         Args:
             processors(list): 
@@ -58,6 +60,7 @@ class WrapperMultiProcessDocument:
         self._processors = processors
         self._ptype = ptype
         self._chunksize = chunksize
+        self._progress_bar = progress_bar
         
         if self._ptype == 'balanced':
             self._pool = Pool(len(self._processors), 
@@ -68,17 +71,24 @@ class WrapperMultiProcessDocument:
         else:
             raise ValueError()
         
+    def _even_parallelization(self, lst):
+        return self._pool.imap_unordered(_perform_analysis, 
+                                         list(enumerate(lst)),
+                                         self._chunksize)
     
     def __call__(self, lst):
         if self._ptype == 'balanced':
             final_res = [None for i in range(len(lst))]
-            for i, res in tqdm.tqdm(self._pool.imap_unordered(_perform_analysis, 
-                                                              list(enumerate(lst)),
-                                                              self._chunksize), 
-                                    total=len(lst)):
+            if self._progress_bar is None:
+                results = self._even_parallelization(lst)
+            else:
+                results = self._progress_bar(self._even_parallelization(lst), total=len(lst))
+                
+            for i, res in results:
                 final_res[i] = res
 
             return final_res
+        
         elif self._ptype == 'even':
             chunks = split_equally(lst, len(self._processors))
         

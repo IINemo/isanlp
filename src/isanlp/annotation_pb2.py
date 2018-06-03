@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='annotation.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x10\x61nnotation.proto\x1a\x19google/protobuf/any.proto\">\n\nAnnMapItem\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\"*\n\rAnnotationMap\x12\x19\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x0b.AnnMapItem\"4\n\x0e\x41nnotationList\x12\"\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x14.google.protobuf.Any\"0\n\x0f\x41nnotationTuple\x12\x1d\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x0f.AnnotationList\"\"\n\x04Span\x12\r\n\x05\x62\x65gin\x18\x01 \x01(\x05\x12\x0b\n\x03\x65nd\x18\x02 \x01(\x05\".\n\nTaggedSpan\x12\x13\n\x04span\x18\x01 \x01(\x0b\x32\x05.Span\x12\x0b\n\x03tag\x18\x02 \x01(\t\"8\n\x0eTaggedRelation\x12\x0c\n\x04head\x18\x01 \x01(\x05\x12\x0b\n\x03\x64\x65p\x18\x02 \x01(\x05\x12\x0b\n\x03tag\x18\x03 \x01(\t\"*\n\x05Token\x12\x13\n\x04span\x18\x01 \x01(\x0b\x32\x05.Span\x12\x0c\n\x04text\x18\x02 \x01(\t\"&\n\x08Sentence\x12\r\n\x05\x62\x65gin\x18\x01 \x01(\x05\x12\x0b\n\x03\x65nd\x18\x02 \x01(\x05\"\x1a\n\tLngString\x12\r\n\x05value\x18\x01 \x01(\t\"\x17\n\x06LngInt\x12\r\n\x05value\x18\x01 \x01(\x05\"-\n\x08WordSynt\x12\x0e\n\x06parent\x18\x01 \x01(\x05\x12\x11\n\tlink_name\x18\x02 \x01(\t\"X\n\x0eProcessRequest\x12\x15\n\rpipeline_name\x18\x01 \x01(\t\x12/\n\x11input_annotations\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\":\n\x0cProcessReply\x12*\n\x12output_annotations\x18\x01 \x01(\x0b\x32\x0e.AnnotationMap\"2\n\x18RegisteredPipelinesReply\x12\x16\n\x0epipeline_names\x18\x01 \x03(\t\"\x06\n\x04Void\"F\n\x05\x45vent\x12\x1e\n\x04pred\x18\x01 \x01(\x0b\x32\x10.AnnotationTuple\x12\x1d\n\x04\x61rgs\x18\x02 \x01(\x0b\x32\x0f.AnnotationList2y\n\nNlpService\x12+\n\x07process\x12\x0f.ProcessRequest\x1a\r.ProcessReply\"\x00\x12>\n\x18get_registered_pipelines\x12\x05.Void\x1a\x19.RegisteredPipelinesReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10\x61nnotation.proto\x1a\x19google/protobuf/any.proto\">\n\nAnnMapItem\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\"*\n\rAnnotationMap\x12\x19\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x0b.AnnMapItem\"4\n\x0e\x41nnotationList\x12\"\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x14.google.protobuf.Any\"0\n\x0f\x41nnotationTuple\x12\x1d\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x0f.AnnotationList\"\"\n\x04Span\x12\r\n\x05\x62\x65gin\x18\x01 \x01(\x05\x12\x0b\n\x03\x65nd\x18\x02 \x01(\x05\".\n\nTaggedSpan\x12\x13\n\x04span\x18\x01 \x01(\x0b\x32\x05.Span\x12\x0b\n\x03tag\x18\x02 \x01(\t\"8\n\x0eTaggedRelation\x12\x0c\n\x04head\x18\x01 \x01(\x05\x12\x0b\n\x03\x64\x65p\x18\x02 \x01(\x05\x12\x0b\n\x03tag\x18\x03 \x01(\t\"*\n\x05Token\x12\x13\n\x04span\x18\x01 \x01(\x0b\x32\x05.Span\x12\x0c\n\x04text\x18\x02 \x01(\t\"&\n\x08Sentence\x12\r\n\x05\x62\x65gin\x18\x01 \x01(\x05\x12\x0b\n\x03\x65nd\x18\x02 \x01(\x05\"\x1a\n\tLngString\x12\r\n\x05value\x18\x01 \x01(\t\"\x17\n\x06LngInt\x12\r\n\x05value\x18\x01 \x01(\x05\"-\n\x08WordSynt\x12\x0e\n\x06parent\x18\x01 \x01(\x05\x12\x11\n\tlink_name\x18\x02 \x01(\t\"X\n\x0eProcessRequest\x12\x15\n\rpipeline_name\x18\x01 \x01(\t\x12/\n\x11input_annotations\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any\"@\n\x0cProcessReply\x12\x30\n\x12output_annotations\x18\x01 \x01(\x0b\x32\x14.google.protobuf.Any\"2\n\x18RegisteredPipelinesReply\x12\x16\n\x0epipeline_names\x18\x01 \x03(\t\"\x06\n\x04Void\"F\n\x05\x45vent\x12\x1e\n\x04pred\x18\x01 \x01(\x0b\x32\x10.AnnotationTuple\x12\x1d\n\x04\x61rgs\x18\x02 \x01(\x0b\x32\x0f.AnnotationList2y\n\nNlpService\x12+\n\x07process\x12\x0f.ProcessRequest\x1a\r.ProcessReply\"\x00\x12>\n\x18get_registered_pipelines\x12\x05.Void\x1a\x19.RegisteredPipelinesReply\"\x00\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_any__pb2.DESCRIPTOR,])
 
@@ -520,7 +520,7 @@ _PROCESSREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=675,
-  serialized_end=733,
+  serialized_end=739,
 )
 
 
@@ -550,8 +550,8 @@ _REGISTEREDPIPELINESREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=735,
-  serialized_end=785,
+  serialized_start=741,
+  serialized_end=791,
 )
 
 
@@ -574,8 +574,8 @@ _VOID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=787,
-  serialized_end=793,
+  serialized_start=793,
+  serialized_end=799,
 )
 
 
@@ -612,8 +612,8 @@ _EVENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=795,
-  serialized_end=865,
+  serialized_start=801,
+  serialized_end=871,
 )
 
 _ANNMAPITEM.fields_by_name['value'].message_type = google_dot_protobuf_dot_any__pb2._ANY
@@ -623,7 +623,7 @@ _ANNOTATIONTUPLE.fields_by_name['data'].message_type = _ANNOTATIONLIST
 _TAGGEDSPAN.fields_by_name['span'].message_type = _SPAN
 _TOKEN.fields_by_name['span'].message_type = _SPAN
 _PROCESSREQUEST.fields_by_name['input_annotations'].message_type = google_dot_protobuf_dot_any__pb2._ANY
-_PROCESSREPLY.fields_by_name['output_annotations'].message_type = _ANNOTATIONMAP
+_PROCESSREPLY.fields_by_name['output_annotations'].message_type = google_dot_protobuf_dot_any__pb2._ANY
 _EVENT.fields_by_name['pred'].message_type = _ANNOTATIONTUPLE
 _EVENT.fields_by_name['args'].message_type = _ANNOTATIONLIST
 DESCRIPTOR.message_types_by_name['AnnMapItem'] = _ANNMAPITEM
@@ -772,8 +772,8 @@ _NLPSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=867,
-  serialized_end=988,
+  serialized_start=873,
+  serialized_end=994,
   methods=[
   _descriptor.MethodDescriptor(
     name='process',

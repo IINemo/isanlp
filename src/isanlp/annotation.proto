@@ -78,7 +78,7 @@ message ProcessRequest {
 
 
 message ProcessReply {
-  AnnotationMap output_annotations = 1;
+  google.protobuf.Any output_annotations = 1;
 }
 
 

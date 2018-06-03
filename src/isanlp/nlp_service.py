@@ -33,7 +33,8 @@ class NlpService(annotation_pb2_grpc.NlpServiceServicer):
         logger.info('Done.')
         
         pb_res = annotation_to_protobuf.convert_annotation(res)
-        reply = pb.ProcessReply(output_annotations = pb_res)
+        reply = pb.ProcessReply()
+        reply.output_annotations.Pack(pb_res)
         
         return reply
     
