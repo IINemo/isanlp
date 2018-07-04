@@ -136,7 +136,8 @@ The IsaNLP library provides several core routines, processors, and models that d
 
 # Roadmap:
 1. <s>Publish SRL parser for Russian.</s> [published](https://github.com/IINemo/isanlp_srl_framebankmark).
-2. Expand documentation.
-3. Automatic tests.
-4. Sentiment analysis for English and Russian.
-5. Anaphora resolution for English and Russian.
+2. <s>UDPipe support.</s> Implemented.
+3. Expand documentation.
+4. Automatic tests.
+5. Sentiment analysis for English and Russian.
+6. Anaphora resolution for English and Russian.
