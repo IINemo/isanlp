@@ -2,17 +2,19 @@ import sys
 from ufal.udpipe import Model, Pipeline, ProcessingError
 from . import annotation as ann
 
+# TODO: @elena
+# 1) Move all annotation extraction functions to separate class converter_conll_ud_v1.py . Thats because we 
+# have the same functionality in processor_syntaxnet_remote.py. I will update it to use this class.
+# 2) Remove custom substring search function, use the standard one. 
+# 3) Document __call__ method and prettify code according pep. I see at least discrepancy in string quotes. 
 
 class ProcessorUDPipe:
-    def __init__(self,
-                 model_path,
-                 input_format='generic_tokenizer',
-                 output_format='conllu'):
+    def __init__(self, model_path):
         self.model = Model.load(model_path)
         if not self.model:
             sys.stderr.write("Cannot load model from file '%s'\n" % model_path)
 
-        self.pipeline = Pipeline(self.model, input_format, Pipeline.DEFAULT, Pipeline.DEFAULT, output_format)
+        self.pipeline = Pipeline(self.model, 'generic_tokenizer', Pipeline.DEFAULT, Pipeline.DEFAULT, 'conllu')
         self.error = ProcessingError()
 
     def __call__(self, text):
@@ -33,6 +35,7 @@ class ProcessorUDPipe:
                 'morph': self.get_morph(annotation)
                 }
 
+    # TODO: @elena move all this functions to separate class converter_conll_ud_v1.py
     def parse_conll(self, string):
         keys = ['id', 'form', 'lemma', 'UPOS', 'XPOS', 'feats', 'head', 'deprel', 'deps']
         return [[dict(zip(keys, word.split('\t')[:10])) for word in sentence.split("\n")[2:-2]] for sentence in
@@ -45,7 +48,9 @@ class ProcessorUDPipe:
             List of objects Token.
         """
 
-        def get_position(text, start, form):
+        # TODO: @elena at least use standard `find` function in string. Why custom? 
+        # (optional) you can also checkout fast substring search functions.
+        def get_position(text, start, form): 
             # no way to get Token from udpipe.pipeline
             while (form != text[start: start + len(form)] and start + len(form) <= len(text)):
                 start += 1
