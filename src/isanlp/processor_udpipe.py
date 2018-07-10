@@ -1,6 +1,5 @@
 import sys
 from ufal.udpipe import Model, Pipeline, ProcessingError
-from . import annotation as ann
 from .converter_conll_ud_v1 import ConverterConllUDV1
 
 
@@ -36,7 +35,7 @@ class ProcessorUDPipe:
             3. lemma - list of lists of strings that represent lemmas of words.
             4. postag - list of lists of strings that represent postags of words.
             5. morph - list of lists of strings that represent morphological features.
-            6. syntax_dep_tree - list of lists of objects WordSynt that represent a dependency tree
+            6. syntax_dep_tree - list of lists of objects WordSynt that represent a dependency tree.
         """
         processed = self.pipeline.process(text, self.error)
         if self.error.occurred():
@@ -46,42 +45,7 @@ class ProcessorUDPipe:
 
         annotation = self.converter_conll(processed)
 
-        annotation['sentences'] = self.sentence_split(annotation['form'])
-        annotation['tokens'] = self.get_tokens(text, annotation['form'])
+        annotation['sentences'] = self.converter_conll.sentence_split(annotation['form'])
+        annotation['tokens'] = self.converter_conll.get_tokens(text, annotation['form'])
 
         return annotation
-
-
-    def get_tokens(self, text, form_annotation):
-        """Performs sentence splitting.
-
-        Args:
-            form_annotation(list): list of lists of forms of words.
-
-        Returns:
-            List of objects Token.
-        """
-
-        ann_tokens = list()
-        for sent in form_annotation:
-            for form in sent:
-                begin = text.find(form)
-                end = begin + len(form)
-                ann_tokens.append(ann.Token(text=form, begin=begin, end=end))
-        return ann_tokens
-
-    def sentence_split(self, form_annotation):
-        """Performs sentence splitting.
-
-        Args:
-            form_annotation(list): list of lists of forms of words.
-
-        Returns:
-            List of objects Sentence.
-        """
-        sentences = list()
-        start = 0
-        for sent in form_annotation:
-            sentences.append(ann.Sentence(begin=start, end=start + len(sent)))
-            start += len(sent)
-        return sentences

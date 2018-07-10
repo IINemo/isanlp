@@ -141,3 +141,4 @@ The IsaNLP library provides several core routines, processors, and models that d
 4. Automatic tests.
 5. Sentiment analysis for English and Russian.
 6. Anaphora resolution for English and Russian.
+7. Spacy wrapper.
