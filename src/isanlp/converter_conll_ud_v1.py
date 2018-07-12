@@ -116,5 +116,7 @@ class ConverterConllUDV1:
         return {feature[0]: feature[1] for feature in result}
 
     def _parse_synt_tree(self, head, deprel):
+        if head == '_':
+            return None
         return WordSynt(parent=int(head) - 1, link_name=deprel)
         

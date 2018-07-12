@@ -1,6 +1,5 @@
 import sys
 from ufal.udpipe import Model, Pipeline, ProcessingError
-from .converter_conll_ud_v1 import ConverterConllUDV1
 
 
 class ProcessorUDPipe:
@@ -13,12 +12,14 @@ class ProcessorUDPipe:
     4. Parsing.
     """
 
-    def __init__(self, model_path):
+    def __init__(self, model_path, tagger=True, parser=True):
         self.model = Model.load(model_path)
         if not self.model:
             sys.stderr.write('Cannot load model from file "%s"\n' % model_path)
 
-        self.pipeline = Pipeline(self.model, 'generic_tokenizer', Pipeline.DEFAULT, Pipeline.DEFAULT, 'conllu')
+        self.tagger = Pipeline.DEFAULT if tagger else Pipeline.NONE
+        self.parser = Pipeline.DEFAULT if parser else Pipeline.NONE
+        self.pipeline = Pipeline(self.model, 'generic_tokenizer', self.tagger, self.parser, 'conllu')
         self.error = ProcessingError()
         self.converter_conll = ConverterConllUDV1()
 
@@ -44,6 +45,14 @@ class ProcessorUDPipe:
             return sys.stderr.write('\n')
 
         annotation = self.converter_conll(processed)
+
+        if self.tagger == Pipeline.NONE:
+            for key in ('lemma', 'postag'):
+                annotation.pop(key, None)
+
+        if self.parser == Pipeline.NONE:
+            for key in ('synt_dep_tree', 'postag'):
+                annotation.pop(key, None)
 
         annotation['sentences'] = self.converter_conll.sentence_split(annotation['form'])
         annotation['tokens'] = self.converter_conll.get_tokens(text, annotation['form'])
