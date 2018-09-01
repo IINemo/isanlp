@@ -1,5 +1,6 @@
 import sys
 from ufal.udpipe import Model, Pipeline, ProcessingError
+from .converter_conll_ud_v1 import ConverterConllUDV1
 
 
 class ProcessorUDPipe:
