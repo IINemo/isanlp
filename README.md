@@ -22,7 +22,7 @@ In the basic use case, the library depends only on grpc library.
 # Basic usage
 ```python
 from isanlp.processor_remote import ProcessorRemote
-ppl = ProcessorRemote(host='localhost', port=33333, pipeline_name='default')
+ppl = ProcessorRemote(host='localhost', port=3333, pipeline_name='default')
 
 text_ru = 'Мама мыла раму'
 annotations = ppl(text_ru)
