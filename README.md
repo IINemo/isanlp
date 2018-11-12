@@ -4,7 +4,7 @@
 # Description
 
 ISANLP is a Python 3 library that encompasses several open-source natural language processing tools for English and Russian and provides a framework for running them locally as a single pipeline or in a distributed environment via RPC. It also provides an easy to deploy docker container inemo/isanlp for starting various types of workers.
-Version: 0.0.1
+Version 0.0.5
 
 # Getting started
 
@@ -79,7 +79,7 @@ ppl = PipelineCommon([(ProcessorPolyglot().detect_language,
                        ['tokens', 'sentences'],
                        {'syntax_dep_tree' : 'syntax_dep_tree'}),
                       (ProcessorPolyglot(), 
-                       ['text],
+                       ['text'],
                        {'entities' : 'entities'})])
 
 text_ru = 'Мама мыла раму.'
@@ -88,7 +88,7 @@ annotations = ppl(text_ru)
 
 The pipeline contains a list of processors -- objects that perform separate language processing tasks. The result of the pipeline execution is a dictionary of "facets" -- different types of annotations extracted from the text by processors. The dictionary of annotations is stored inside the pipeline and filled up by processors. Processors get their input parameters from the annotation dictionary and save results into the dictionary. 
 
-The prarameters of processors are specified in a tuple during pipeline construction:
+The parameters of processors are specified in a tuple during pipeline construction:
 ```PipelineCommon((<ProcObject>(), <list of input parameters>, <dictionary of output results>), ...) ```
 
 You also should specify the label, which would be used to save your results in a pipeline annotation dictionary. If you do not provide a name for a result annotation it would be dropped from further processing. Processors can overwrite annotations aquired from other processors. To avoid overwriting just drop the result annotations.
@@ -112,7 +112,22 @@ Conditional execution: TBD:
 
 
 ## Data structures
-TBD:
+
+The pipeline returns the results in a dictionary with keys that were provided in the parameters of processors. If processor returns None, results are ommited.
+Available keys & values structures:
+  * `'lang'`(str) -- ISO code of detected language.
+  * `'lemma'`(list) -- list of lists of string lemma annotations for each sentence. The first list corresponds to sentences, the second corresponds to annotations inside a sentence.
+  * `'morph'`(list) -- list of lists of dictionary objects where the keys are the morphological features available for the current word. 
+  * `'postag'`(list) -- list of lists of string POS tags for each sentence.
+  * `'sentences'`(list) -- list of `isanlp.annotation.Sentence` objects. Each Sentence contains:
+    * begin(int) -- number of the first token in a sentence.
+    * end(int) -- number of the last token in a sentence + 1.
+  * `'syntax_dep_tree'`(list) -- list of lists of `isanlp.annotation.WordSynt` objects. WordSynt objects mean nodes in syntax dependency tree and have two members:
+    * parent(int) -- number of the parent token.
+    * link_name(str) -- name of the link between this word and it's parent.
+  * `'tokens'`(list) -- list of `isanlp.annotation.Token` objects. Each Token contains:
+    * text(str) -- as represented in text.
+  
 
 ## Docker worker
 
@@ -142,3 +157,4 @@ The IsaNLP library provides several core routines, processors, and models that d
 4. Automatic tests.
 5. Sentiment analysis for English and Russian.
 6. Anaphora resolution for English and Russian.
+7. Spacy wrapper.

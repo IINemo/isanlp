@@ -35,7 +35,7 @@ edu.stanford.nlp.parser.ensemble.maltparser.Malt \
                                        stdout = sbp.PIPE,
                                        stderr = sbp.PIPE)
         self._root_label = root_label
-        self._warmup()
+        self._warmup(warmup_text)
         
     def __del__(self):
         self._malt_process.terminate()
