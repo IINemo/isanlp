@@ -54,6 +54,10 @@ class ProcessorUDPipe:
         if self.parser == Pipeline.NONE:
             for key in ('synt_dep_tree', 'postag'):
                 annotation.pop(key, None)
+        
+        for sent_lemma in annotation_lemma:
+            for i in range(len(sent_lemma)):
+                sent_lemma[i] = sent_lemma[i].lower()
 
         annotation['sentences'] = self.converter_conll.sentence_split(annotation['form'])
         annotation['tokens'] = self.converter_conll.get_tokens(text, annotation['form'])
