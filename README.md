@@ -3,8 +3,10 @@
 
 # Description
 
-ISANLP is a Python 3 library that encompasses several open-source natural language processing tools for English and Russian and provides a framework for running them locally as a single pipeline or in a distributed environment via RPC. It also provides an easy to deploy docker container inemo/isanlp for starting various types of workers.
+ISANLP is a Python 3 library that encompasses several open-source natural language processing tools for English and Russian and provides a framework for running them locally as a single pipeline or in a distributed environment via RPC. It also provides an easy to deploy docker container inemo/isanlp for starting various types of workers.  
 Version 0.0.5
+
+Warning version 0.0.5 breaks compatibility with old containers! When installing new version of the library you need to pull new containers or use 0.0.1 version of the library (old containers are also tagged as 0.0.1).
 
 # Getting started
 
