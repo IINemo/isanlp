@@ -1,4 +1,5 @@
 from . import annotation as ann
+from .annotation_repr import CSentence
 import subprocess as sbp
 from nltk.parse.util import taggedsent_to_conll
 from nltk.parse.dependencygraph import DependencyGraph
@@ -79,7 +80,7 @@ edu.stanford.nlp.parser.ensemble.maltparser.Malt \
         
         result = list()
         for i in range(len(sentences)):
-            nltk_sent = zip([word.text for word in ann.CSentence(tokens, sentences[i])], postags[i])
+            nltk_sent = zip([word.text for word in CSentence(tokens, sentences[i])], postags[i])
             str_sent = ''.join([e for e in taggedsent_to_conll(nltk_sent)]) + '\n'
             tree_str = self._process_sentence_str(str_sent)
             dep_gr = DependencyGraph(tree_str, top_relation_label = self._root_label)
