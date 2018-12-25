@@ -55,7 +55,7 @@ class ProcessorUDPipe:
             for key in ('synt_dep_tree', 'postag'):
                 annotation.pop(key, None)
         
-        for sent_lemma in annotation_lemma:
+        for sent_lemma in annotation['lemma']:
             for i in range(len(sent_lemma)):
                 sent_lemma[i] = sent_lemma[i].lower()
 
