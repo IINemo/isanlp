@@ -6,7 +6,7 @@ MAINTAINER Nemo
 RUN apt-get update && apt-get install -y default-jre default-jdk
 
 # Installing Mystem
-RUN pip install pymystem3
+RUN pip install git+https://github.com/nlpub/pymystem3
 RUN python -c "import pymystem3 ; pymystem3.Mystem()"
 
 # NLTK
