@@ -44,6 +44,7 @@ Current:
 7. MaltParser CoNLL-2008: dependency parsing with a runtime and a model for English as a standalone docker container.
 8. Deep-SRL parser as a standalone docker container (semantic role labeling for English).
 9. Russian semantic role labeler (SRL) based on FrameBank and neural network models.
+10. UDPipe: morphological and syntactic parser (English/Russian).
 
 To be included:
 1. English/Russian advanced neural network named entity recognition.
