@@ -70,7 +70,7 @@ class ConverterConllUDV1:
                 'lemma': result_lemma,
                 'postag': result_postag,
                 'morph': result_morph,
-                'synt_dep_tree': result_synt}
+                'syntax_dep_tree': result_synt}
 
     def get_tokens(self, text, form_annotation):
         """Performs sentence splitting.
