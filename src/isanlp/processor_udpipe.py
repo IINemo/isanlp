@@ -1,6 +1,7 @@
 import sys
 from ufal.udpipe import Model, Pipeline, ProcessingError
 from .converter_conll_ud_v1 import ConverterConllUDV1
+from .annotation_repr import CSentence
 
 
 class ProcessorUDPipe:
@@ -24,11 +25,13 @@ class ProcessorUDPipe:
         self.error = ProcessingError()
         self.converter_conll = ConverterConllUDV1()
 
-    def __call__(self, text):
+    def __call__(self, *argv):
         """Performs tokenization, tagging, lemmatizing and parsing.
 
         Args:
-            text(str): text.
+            text(str): text. OR
+            tokens(list): List of Token objects.
+            sentences(list): List of Sentence objects.
 
         Returns:
             Dictionary that contains:
@@ -39,22 +42,50 @@ class ProcessorUDPipe:
             5. morph - list of lists of strings that represent morphological features.
             6. syntax_dep_tree - list of lists of objects WordSynt that represent a dependency tree.
         """
-        processed = self.pipeline.process(text, self.error)
+        if type(argv[0]) == str:
+            return self.process_text(argv[0])
+
+        return self.process_tokenized(argv[0], argv[1])
+
+    def process_text(self, text):
+        udpipe_result = self.pipeline.process(text, self.error)
         if self.error.occurred():
             sys.stderr.write('An error occurred when calling ProcessorUDPipe: ')
             sys.stderr.write(self.error.message)
             return sys.stderr.write('\n')
 
-        annotation = self.converter_conll(processed)
+        annotation = self.convert_conll(text, udpipe_result)
+        return annotation
+
+    def process_tokenized(self, tokens, sentences):
+        lemma_result = []
+        postag_result = []
+        morph_result = []
+        synt_dep_tree_result = []
+        for sent in sentences:
+            sent_text = ' '.join([e.text for e in CSentence(tokens, sent)])
+            sent_annotation = self.process_text(sent_text)
+            lemma_result.append(sent_annotation['lemma'][0])
+            postag_result.append(sent_annotation['postag'][0])
+            morph_result.append(sent_annotation['morph'][0])
+            synt_dep_tree_result.append(sent_annotation['syntax_dep_tree'][0])
+
+        return {'lemma': lemma_result,
+                'postag': postag_result,
+                'morph': morph_result,
+                'syntax_dep_tree': synt_dep_tree_result}
+
+    def convert_conll(self, text, udpipe_result):
+        annotation = self.converter_conll(udpipe_result)
 
         if self.tagger == Pipeline.NONE:
             for key in ('lemma', 'postag'):
                 annotation.pop(key, None)
 
         if self.parser == Pipeline.NONE:
-            for key in ('synt_dep_tree', 'postag'):
+            for key in ('syntax_dep_tree', 'postag'):
                 annotation.pop(key, None)
-        
+
         for sent_lemma in annotation['lemma']:
             for i in range(len(sent_lemma)):
                 sent_lemma[i] = sent_lemma[i].lower()
