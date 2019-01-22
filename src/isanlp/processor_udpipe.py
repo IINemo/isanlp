@@ -21,7 +21,6 @@ class ProcessorUDPipe:
 
         self.tagger = Pipeline.DEFAULT if tagger else Pipeline.NONE
         self.parser = Pipeline.DEFAULT if parser else Pipeline.NONE
-        self.pipeline = Pipeline(self.model, 'generic_tokenizer', self.tagger, self.parser, 'conllu')
         self.error = ProcessingError()
         self.converter_conll = ConverterConllUDV1()
 
@@ -43,8 +42,13 @@ class ProcessorUDPipe:
             6. syntax_dep_tree - list of lists of objects WordSynt that represent a dependency tree.
         """
         if type(argv[0]) == str:
+            self.TOKENIZER = 'generic_tokenizer'
+            self.pipeline = Pipeline(self.model, self.TOKENIZER, self.tagger, self.parser, 'conllu')
+
             return self.process_text(argv[0])
 
+        self.TOKENIZER = 'horizontal'
+        self.pipeline = Pipeline(self.model, self.TOKENIZER, self.tagger, self.parser, 'conllu')
         return self.process_tokenized(argv[0], argv[1])
 
     def process_text(self, text):
@@ -58,22 +62,25 @@ class ProcessorUDPipe:
         return annotation
 
     def process_tokenized(self, tokens, sentences):
-        lemma_result = []
-        postag_result = []
-        morph_result = []
-        synt_dep_tree_result = []
-        for sent in sentences:
-            sent_text = ' '.join([e.text for e in CSentence(tokens, sent)])
-            sent_annotation = self.process_text(sent_text)
-            lemma_result.append(sent_annotation['lemma'][0])
-            postag_result.append(sent_annotation['postag'][0])
-            morph_result.append(sent_annotation['morph'][0])
-            synt_dep_tree_result.append(sent_annotation['syntax_dep_tree'][0])
+        raw_input = self.prepare_tokenized_input(tokens, sentences)
+        annotation = self.process_text(raw_input)
+        lemma_result = annotation['lemma']
+        postag_result = annotation['postag']
+        morph_result = annotation['morph']
+        synt_dep_tree_result = annotation['syntax_dep_tree']
 
         return {'lemma': lemma_result,
                 'postag': postag_result,
                 'morph': morph_result,
                 'syntax_dep_tree': synt_dep_tree_result}
+
+    def prepare_tokenized_input(self, tokens, sentences):
+        raw_input_s = ''
+        for sent in sentences:
+            line = ' '.join((e.text for e in CSentence(tokens, sent)))
+            raw_input_s += line
+            raw_input_s += '\n'
+        return raw_input_s
 
     def convert_conll(self, text, udpipe_result):
         annotation = self.converter_conll(udpipe_result)
