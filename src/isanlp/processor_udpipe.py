@@ -1,6 +1,7 @@
 import sys
 from ufal.udpipe import Model, Pipeline, ProcessingError
 from .converter_conll_ud_v1 import ConverterConllUDV1
+from .annotation_repr import CSentence
 
 
 class ProcessorUDPipe:
@@ -20,15 +21,16 @@ class ProcessorUDPipe:
 
         self.tagger = Pipeline.DEFAULT if tagger else Pipeline.NONE
         self.parser = Pipeline.DEFAULT if parser else Pipeline.NONE
-        self.pipeline = Pipeline(self.model, 'generic_tokenizer', self.tagger, self.parser, 'conllu')
         self.error = ProcessingError()
         self.converter_conll = ConverterConllUDV1()
 
-    def __call__(self, text):
+    def __call__(self, *argv):
         """Performs tokenization, tagging, lemmatizing and parsing.
 
         Args:
-            text(str): text.
+            text(str): text. OR
+            tokens(list): List of Token objects.
+            sentences(list): List of Sentence objects.
 
         Returns:
             Dictionary that contains:
@@ -39,22 +41,58 @@ class ProcessorUDPipe:
             5. morph - list of lists of strings that represent morphological features.
             6. syntax_dep_tree - list of lists of objects WordSynt that represent a dependency tree.
         """
-        processed = self.pipeline.process(text, self.error)
+        if type(argv[0]) == str:
+            self.TOKENIZER = 'generic_tokenizer'
+            self.pipeline = Pipeline(self.model, self.TOKENIZER, self.tagger, self.parser, 'conllu')
+
+            return self.process_text(argv[0])
+
+        self.TOKENIZER = 'horizontal'
+        self.pipeline = Pipeline(self.model, self.TOKENIZER, self.tagger, self.parser, 'conllu')
+        return self.process_tokenized(argv[0], argv[1])
+
+    def process_text(self, text):
+        udpipe_result = self.pipeline.process(text, self.error)
         if self.error.occurred():
             sys.stderr.write('An error occurred when calling ProcessorUDPipe: ')
             sys.stderr.write(self.error.message)
             return sys.stderr.write('\n')
 
-        annotation = self.converter_conll(processed)
+        annotation = self.convert_conll(text, udpipe_result)
+        return annotation
+
+    def process_tokenized(self, tokens, sentences):
+        raw_input = self.prepare_tokenized_input(tokens, sentences)
+        annotation = self.process_text(raw_input)
+        lemma_result = annotation['lemma']
+        postag_result = annotation['postag']
+        morph_result = annotation['morph']
+        synt_dep_tree_result = annotation['syntax_dep_tree']
+
+        return {'lemma': lemma_result,
+                'postag': postag_result,
+                'morph': morph_result,
+                'syntax_dep_tree': synt_dep_tree_result}
+
+    def prepare_tokenized_input(self, tokens, sentences):
+        raw_input_s = ''
+        for sent in sentences:
+            line = ' '.join((e.text for e in CSentence(tokens, sent)))
+            raw_input_s += line
+            raw_input_s += '\n'
+        return raw_input_s
+
+    def convert_conll(self, text, udpipe_result):
+        annotation = self.converter_conll(udpipe_result)
 
         if self.tagger == Pipeline.NONE:
             for key in ('lemma', 'postag'):
                 annotation.pop(key, None)
 
         if self.parser == Pipeline.NONE:
-            for key in ('synt_dep_tree', 'postag'):
+            for key in ('syntax_dep_tree', 'postag'):
                 annotation.pop(key, None)
-        
+
         for sent_lemma in annotation['lemma']:
             for i in range(len(sent_lemma)):
                 sent_lemma[i] = sent_lemma[i].lower()
