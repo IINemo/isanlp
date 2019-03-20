@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 
 RUN apt-get update && apt-get install -y git curl wget zlib1g-dev libssl-dev \
@@ -22,7 +22,7 @@ ENV LC_ALL en_US.UTF-8
 
 # Python libraries
 
-RUN pip install --upgrade pip && pip install grpcio
+RUN pip install --upgrade pip && pip install grpcio protobuf
 COPY isanlp /src/isanlp
 RUN pip install /src/isanlp/
 

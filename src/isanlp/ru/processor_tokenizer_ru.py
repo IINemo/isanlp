@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-
-from ..en.processor_tokenizer_ru import _en_abbrevs
+#from ..en.processor_tokenizer_nltk_en import _en_abbrevs
 from nltk.tokenize import RegexpTokenizer
 import string
+import re
 
 from ..annotation import Token
 
@@ -327,7 +326,8 @@ _ru_rules = [u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}', #e-mail
          u'\S']
 
 
-_ru_regex = u'|'.join(_ru_abbrevs + _en_abbrevs + _ru_rules)
+#_ru_regex = u'|'.join(_ru_abbrevs + _en_abbrevs + _ru_rules)
+_ru_regex = u'|'.join(_ru_abbrevs + _ru_rules)
 
 
 class ProcessorTokenizerRu:

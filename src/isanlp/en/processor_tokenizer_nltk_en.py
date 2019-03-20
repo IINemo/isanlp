@@ -25,7 +25,7 @@ class ProcessorTokenizerNltkEn:
     """
     
     def __init__(self):
-        self._proc = RegexpTokenizer(_ru_regex)
+        self._proc = RegexpTokenizer(_en_regex)
     
     def __call__(self, text):
         """Performs tokenization of text.
