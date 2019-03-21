@@ -23,7 +23,7 @@ def read(*names, **kwargs):
 
 setup(
     name='isanlp',
-    version='0.0.5',
+    version='0.0.6',
     description='ISA open-souce experimental library for natural language processing (NLP). Implements and wraps many linguistic parsers.',
     author='ISA RAS',
     author_email='',
