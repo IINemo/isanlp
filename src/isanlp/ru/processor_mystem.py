@@ -28,27 +28,35 @@ class ProcessorMystem:
         lemma_result = []
         postag_result = []
         for sent in sentences:
-            sent_text = ' '.join([e.text for e in CSentence(tokens, sent)])
+            sent_repr = CSentence(tokens, sent)
+            
+            sent_text = ''
+            for e in sent_repr:
+                while len(sent_text) < e.begin:
+                    sent_text += ' '
+                    
+                sent_text += e.text
+                
+            offset_index = {e.begin : num for num, e in enumerate(sent_repr)}
+            lemma_sent_result = [e.text for e in sent_repr]
+            postag_sent_result = [''] * len(tokens)
+            
             mystem_result = self._mystem.analyze(sent_text)
             
-            lemma_sent_result = []
-            postag_sent_result = []
+            offset = 0 # TODO: add all lemmas of unmached words to the first left matched word
             for mystem_token in mystem_result:
                 mystem_token_text = mystem_token['text'].strip()
-                if mystem_token_text:
-                    sub_tokens = mystem_token_text.split(' ')
-                    for i in range(len(sub_tokens)):
-                        if 'analysis' in mystem_token and mystem_token['analysis']:
-                            an = mystem_token['analysis']
-                            lemma = an[0]['lex'].split(' ')[i]
-                            #lemma = an[0]['lex'] if an else ''
-                            postag = an[0]['gr'] if an else ''
-                        else:
-                            lemma = mystem_token_text
-                            postag = ''
-
-                        lemma_sent_result.append(lemma)
-                        postag_sent_result.append(postag)
+                new_pos = mystem_token['text'].find(mystem_token_text)
+                new_pos = offset + new_pos
+                
+                if mystem_token_text and (new_pos in offset_index):
+                    num = offset_index[new_pos]
+                    if 'analysis' in mystem_token and mystem_token['analysis']:
+                        an = mystem_token['analysis']
+                        lemma_sent_result[num] = an[0]['lex']
+                        postag_sent_result[num] = an[0]['gr']
+                
+                offset += len(mystem_token['text'])
                     
             lemma_result.append(lemma_sent_result)
             postag_result.append(postag_sent_result)
