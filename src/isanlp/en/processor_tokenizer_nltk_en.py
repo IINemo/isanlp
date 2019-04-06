@@ -24,9 +24,15 @@ class ProcessorTokenizerNltkEn:
     Wrapper around NLTK RegexpTokenizer.
     """
     
-    def __init__(self):
-        self._proc = RegexpTokenizer(_en_regex)
-    
+    def __init__(self, delay_init = False):
+        self._proc = None
+        if not delay_init:
+            self.init()
+
+    def init(self):
+        if self._proc is None:
+            self._proc = RegexpTokenizer(_en_regex)
+
     def __call__(self, text):
         """Performs tokenization of text.
         
@@ -36,6 +42,6 @@ class ProcessorTokenizerNltkEn:
         Returns:
             List of Token objects.
         """
-        
+
+        assert self._proc
         return [Token(text[start : end], start, end) for (start, end) in self._nltk_proc.span_tokenize(text)]
-    

@@ -12,12 +12,19 @@ class ProcessorSentenceSplitter:
     Simple wrapper around NLTK component. Suitable for european languages.
     """
     
-    def __init__(self):
-        punkt_param = PunktParameters()
-        punkt_param.abbrev_types = self.compile_abbreviations()
-        self.sent_tokeniser_ = PunktSentenceTokenizer(punkt_param)
-    
+    def __init__(self, delay_init = False):
+        self.sent_tokeniser_ = None
+        if not delay_init:
+            self.init()
+
+    def init(self):
+        if self.sent_tokeniser_ is None:
+            punkt_param = PunktParameters()
+            punkt_param.abbrev_types = self.compile_abbreviations()
+            self.sent_tokeniser_ = PunktSentenceTokenizer(punkt_param)
+
     def __call__(self, tokens):
+        assert self.sent_tokeniser_
         sents = self.sent_tokeniser_.sentences_from_tokens((e.text for e in tokens))
         curr = 0
         res_sents = list()

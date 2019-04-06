@@ -24,9 +24,15 @@ class ProcessorLemmatizerNltkEn:
     Simple wrapper around NLTK WordNetLemmatizer.
     """
     
-    def __init__(self):
-        self._nltk_lmtzr = WordNetLemmatizer()
-    
+    def __init__(self, delay_init = False):
+        self._nltk_lmtzr = None
+        if not delay_init:
+            self.init()
+
+    def init(self):
+        if self._nltk_lmtzr is None:
+            self._nltk_lmtzr = WordNetLemmatizer()
+
     def __call__(self, tokens, sentences, postags):
         """Performs lemmatization of texts.
         
@@ -38,11 +44,11 @@ class ProcessorLemmatizerNltkEn:
         Returns:
             List of lists (sentences) of lemmas.
         """
-        
+
+        assert self._nltk_lmtzr
         result = []
         for text_sent, postag_sent in zip(sentences, postags):
             result.append([self._nltk_lmtzr.lemmatize(word.text.lower(), get_wordnet_pos(postag)) 
                            for (word, postag) in zip(CSentence(tokens, text_sent), postag_sent)])
         
         return result
-    
