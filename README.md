@@ -99,15 +99,14 @@ You also should specify the label, which would be used to save your results in a
 Pipelines also can include other pipelines and remote processors:
 
 ```python
-ppl = PipelineCommon([(ProcessorRemote(host='some host', port=8207),
+ppl = PipelineCommon([(ProcessorRemote(host='some host', port=8207, pipeline_name='default'),
                       ['text'],
                       {'tokens' : 'tokens',
                        'sentences' : 'sentences',
                        'lemma' : 'lemma',
-                       'postag' : 'postag',
-                       'morph' : 'morph'}),
+                       'postag' : 'postag'}),
                      (ProcessorSyntaxNetRemote(host='other host', port=7678),
-                      ['sentences'],
+                      ['tokens', 'sentences'],
                       {'syntax_dep_tree' : 'syntax_dep_tree'})])
 ```
 
