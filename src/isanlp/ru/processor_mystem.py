@@ -39,8 +39,8 @@ class ProcessorMystem:
                 
             offset_index = {e.begin : num for num, e in enumerate(sent_repr)}
             lemma_sent_result = [e.text for e in sent_repr]
-            postag_sent_result = [''] * len(tokens)
-            
+            postag_sent_result = [''] * (sent.end - sent.begin)
+
             mystem_result = self._mystem.analyze(sent_text)
             
             offset = 0 # TODO: add all lemmas of unmached words to the first left matched word
