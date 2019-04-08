@@ -43,5 +43,5 @@ class ProcessorTokenizerNltkEn:
             List of Token objects.
         """
 
-        assert self._proc
-        return [Token(text[start : end], start, end) for (start, end) in self._nltk_proc.span_tokenize(text)]
+        
+        return [Token(text[start : end], start, end) for (start, end) in self._proc.span_tokenize(text)]
