@@ -27,4 +27,4 @@ RUN cd /src/ && wget http://maltparser.org/dist/maltparser-1.9.1.tar.gz
 RUN cd /src/ && tar -xf maltparser-1.9.1.tar.gz
 
 
-CMD [ "python", "/start.py", "-m", "isanlp.pipeline_default", "-a", "PIPELINE_DEFAULT" ]
+CMD [ "python", "/start.py", "-m", "isanlp.pipeline_default", "-a", "create_pipeline" ]

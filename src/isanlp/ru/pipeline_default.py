@@ -5,15 +5,16 @@ from .processor_tokenizer_ru import ProcessorTokenizerRu
 from .processor_mystem import ProcessorMystem
 
 
-PIPELINE_DEFAULT = PipelineCommon({'tokenizer' : (ProcessorTokenizerRu(), 
-                                                  ['text'], 
-                                                  {0 : 'tokens'}),
-                                   'sentence_splitter' : (ProcessorSentenceSplitter(), 
-                                                          ['tokens'], 
-                                                          {0 : 'sentences'}),
-                                   'mystem' : (ProcessorMystem(),
-                                               ['tokens', 'sentences'], 
-                                               {'postag' : 'postag', 
-                                                'lemma' : 'lemma'})
-                                  },
-                                  name = 'default')
+
+def create_pipeline(delay_init = False):
+    return PipelineCommon({'tokenizer' : (ProcessorTokenizerRu(),
+                                          ['text'],
+                                          {0 : 'tokens'}),
+                           'sentence_splitter' : (ProcessorSentenceSplitter(),
+                                                  ['tokens'],
+                                                  {0 : 'sentences'}),
+                           'mystem' : (ProcessorMystem(delay_init = delay_init),
+                                       ['tokens', 'sentences'],
+                                       {'postag' : 'postag',
+                                        'lemma' : 'lemma'})},
+                          name = 'default')

@@ -8,10 +8,16 @@ class ProcessorMystem:
     Simple wrapper around MyStem.
     """
     
-    def __init__(self):
-        self._mystem = pymystem3.Mystem()
-        self._mystem.start()
-    
+    def __init__(self, delay_init = False):
+        self._mystem = None
+        if not delay_init:
+            self.init()
+
+    def init(self):
+        if self._mystem is None:
+            self._mystem = pymystem3.Mystem()
+            self._mystem.start()
+
     def __call__(self, tokens, sentences):
         """Runs MyStem on the text.
         
@@ -24,6 +30,7 @@ class ProcessorMystem:
             'lemma' : List of lists (sentences) of lemmas.
             'postag' : List of lists (sentences) of postags.
         """
+        assert self._mystem
         
         lemma_result = []
         postag_result = []

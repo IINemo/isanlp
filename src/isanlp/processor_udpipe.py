@@ -14,15 +14,25 @@ class ProcessorUDPipe:
     4. Parsing.
     """
 
-    def __init__(self, model_path, tagger=True, parser=True):
-        self.model = Model.load(model_path)
-        if not self.model:
-            sys.stderr.write('Cannot load model from file "%s"\n' % model_path)
+    def __init__(self, model_path, tagger=True, parser=True, delay_init=False):
+        self._model_path = model_path
+        self._enable_tagger = tagger
+        self._enable_parser = parser
 
-        self.tagger = Pipeline.DEFAULT if tagger else Pipeline.NONE
-        self.parser = Pipeline.DEFAULT if parser else Pipeline.NONE
-        self.error = ProcessingError()
-        self.converter_conll = ConverterConllUDV1()
+        self.model = None
+        if not delay_init:
+            self.init()
+
+    def init(self):
+        if self.model is None:
+            self.model = Model.load(self._model_path)
+            if not self.model:
+                sys.stderr.write('Cannot load model from file "%s"\n' % self._model_path)
+
+            self.tagger = Pipeline.DEFAULT if self._enable_tagger else Pipeline.NONE
+            self.parser = Pipeline.DEFAULT if self._enable_parser else Pipeline.NONE
+            self.error = ProcessingError()
+            self.converter_conll = ConverterConllUDV1()
 
     def __call__(self, *argv):
         """Performs tokenization, tagging, lemmatizing and parsing.
@@ -41,6 +51,7 @@ class ProcessorUDPipe:
             5. morph - list of lists of strings that represent morphological features.
             6. syntax_dep_tree - list of lists of objects WordSynt that represent a dependency tree.
         """
+        assert self.model
         if type(argv[0]) == str:
             self.TOKENIZER = 'generic_tokenizer'
             self.pipeline = Pipeline(self.model, self.TOKENIZER, self.tagger, self.parser, 'conllu')
