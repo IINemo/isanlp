@@ -336,9 +336,18 @@ class ProcessorTokenizerRu:
     Wrapper around NLTK RegexpTokenizer. Supports Russian abbreviations.
     """
     
-    def __init__(self):
-        self._proc = RegexpTokenizer(_ru_regex, flags=re.IGNORECASE)
+    def __init__(self, delay_init = False):
+        self._proc = None
+        if not delay_init:
+            self.init()
+
+
+    def init(self):
+        if self._proc is None:
+            self._proc = RegexpTokenizer(_ru_regex, flags=re.IGNORECASE)
+
 
     def __call__(self, text):
+        assert self._proc
         return [Token(text[start : end], start, end) for (start, end) in self._proc.span_tokenize(text)]
     

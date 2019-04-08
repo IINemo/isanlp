@@ -89,3 +89,11 @@ class PipelineCommon:
 
     def get_processors(self):
         return self._processors
+
+    def processors_iter(self):
+        for proc_stuff in self._processors.values():
+            proc = proc_stuff[0]
+            if hasattr(proc, 'processors_iter'):
+                yield from proc.processors_iter()
+            else:
+                yield proc

@@ -8,10 +8,16 @@ class ProcessorMystem:
     Simple wrapper around MyStem.
     """
     
-    def __init__(self):
-        self._mystem = pymystem3.Mystem()
-        self._mystem.start()
-    
+    def __init__(self, delay_init = False):
+        self._mystem = None
+        if not delay_init:
+            self.init()
+
+    def init(self):
+        if self._mystem is None:
+            self._mystem = pymystem3.Mystem()
+            self._mystem.start()
+
     def __call__(self, tokens, sentences):
         """Runs MyStem on the text.
         
@@ -24,6 +30,7 @@ class ProcessorMystem:
             'lemma' : List of lists (sentences) of lemmas.
             'postag' : List of lists (sentences) of postags.
         """
+        assert self._mystem
         
         lemma_result = []
         postag_result = []
@@ -39,8 +46,8 @@ class ProcessorMystem:
                 
             offset_index = {e.begin : num for num, e in enumerate(sent_repr)}
             lemma_sent_result = [e.text for e in sent_repr]
-            postag_sent_result = [''] * len(tokens)
-            
+            postag_sent_result = [''] * (sent.end - sent.begin)
+
             mystem_result = self._mystem.analyze(sent_text)
             
             offset = 0 # TODO: add all lemmas of unmached words to the first left matched word

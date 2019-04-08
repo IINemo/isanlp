@@ -1,16 +1,17 @@
-from isanlp.nlp_service_server import NlpServiceServer 
 import argparse
+import importlib
 
+from isanlp.nlp_service_server import NlpServiceServer
 
 parser = argparse.ArgumentParser(description='NLP service.')
 parser.add_argument('-p', type = int, default = 3333, help = 'Port to listen.')
 parser.add_argument('-t', type = int, default = 1, help = 'Number of workers.')
 parser.add_argument('-m', type = str, default = 'isanlp.pipeline_default', help = 'Python module.')
-parser.add_argument('-a', type = str, default= 'PIPELINE_DEFAULT', help = 'Python object.')
+parser.add_argument('-a', type = str, default= 'create_pipeline', help = 'Python function.')
 args = parser.parse_args()
 
 module_name = args.m 
-object_code = args.a
+creator_fn_name = args.a
 port = args.p
 nthreads = args.t
 
@@ -20,12 +21,8 @@ nthreads = args.t
 # ppls = eval(expr)
 # print(ppls)
 
-def expand_ppl(ppl):
-	res_dict = {k : v[0] for k, v in ppl.get_processors().items()}
-	res_dict.update({ppl._name : ppl})
-	return res_dict
-
-ppls = eval("expand_ppl(__import__('importlib').import_module('{}').{})".format(module_name, object_code))
+creator_fn = getattr(importlib.import_module(module_name), creator_fn_name)
+ppl = creator_fn(delay_init = True)
+ppls = {ppl._name : ppl}
 
 NlpServiceServer(ppls = ppls, port = port, max_workers = nthreads).serve()
-
