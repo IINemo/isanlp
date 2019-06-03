@@ -95,6 +95,9 @@ def convert_item(feats, item):
       
     
 def parse_mystem(mystem_str):
+    if not '=' in mystem_str:
+        return {}
+
     lexeme, wordform = mystem_str.split('=')
     lexeme = lexeme.split(',')
     pos_tag = lexeme[0]
