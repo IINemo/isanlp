@@ -13,10 +13,10 @@ class NlpServiceServer:
         max_workers(int): workers for gRPC server.
     """
 
-    def __init__(self, ppls, port = 3333, max_workers = 1):
+    def __init__(self, ppls, port = 3333, max_workers = 1, no_multiprocessing=False):
         self._port = port
         self._max_workers = max_workers
-        self._service = NlpService(ppls, max_workers)
+        self._service = NlpService(ppls, max_workers, no_multiprocessing)
 
     def serve(self):
         """Initiates server for listening of incoming connections (blocking)."""
