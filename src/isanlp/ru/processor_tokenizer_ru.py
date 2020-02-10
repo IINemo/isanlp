@@ -316,8 +316,9 @@ _ru_abbrevs = [
 
 _ru_rules = [u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}', #e-mail
          u'(?:[01]?[0-9]|2[0-4]):[0-5][0-9]', # times
-         u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)', # urls
-         u'[\w\.\-]+\.(?:com|org|net)', # url2
+         #u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)', # urls
+         #u'[\w\.\-]+\.(?:com|org|net)', # url2
+         u'(http[s]?:\/\/)?([^\/\s]+\/)(.*)',
          u'--',
          u'\.\.\.',
          u'\d+\.\d+',
