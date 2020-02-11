@@ -311,13 +311,14 @@ _ru_abbrevs = [
     r'ч\.',
     r'чел\.',
     r'\d?\d\.\d\d\.\d\d(?:\d\d)',
-    r'\w\.\w\.'
+    r'\w\.\w\.',
+    r'tl;tr;?',
 ]
 
 _ru_rules = [u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}', #e-mail
          u'(?:[01]?[0-9]|2[0-4]):[0-5][0-9]', # times
          u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)', # urls
-         u'(http[s]?:\/\/)?([^\/\s]+\/)(.*)(?:com|org|net|html)',
+         u'(http[s]?:\/\/)?([^\/\s]+\/)([^ ]*)(?:com|org|net|html)',
          u'--',
          u'\.\.\.',
          u'\d+\.\d+',
