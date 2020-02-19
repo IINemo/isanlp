@@ -8,7 +8,7 @@ parser.add_argument('-p', type = int, default = 3333, help = 'Port to listen.')
 parser.add_argument('-t', type = int, default = 1, help = 'Number of workers.')
 parser.add_argument('-m', type = str, default = 'isanlp.pipeline_default', help = 'Python module.')
 parser.add_argument('-a', type = str, default= 'create_pipeline', help = 'Function for pipeline creation.')
-parser.add_argument('--no_multiprocessing', type=bool, default=False, 
+parser.add_argument('--no_multiprocessing', type=bool, default=True, 
                     help='Disable usage of multiprocessing.Pool, use direct call instead.')
 args = parser.parse_args()
 
