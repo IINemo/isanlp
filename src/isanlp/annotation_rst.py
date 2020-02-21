@@ -1,6 +1,6 @@
 class DiscourseUnit:
-    def __init__(self, id, left=None, right=None, text='', start=None, end=None, 
-                 orig_text=None, relation=None, nuclearity=None, proba=1.):
+    def __init__(self, id, left=None, right=None, text='', start=None, end=None,
+                 orig_text=None, relation='', nuclearity='', proba=1.):
         """
         :param int id:
         :param DiscourseUnit left:
@@ -22,23 +22,22 @@ class DiscourseUnit:
         self.end = end
 
         if self.left:
-            gap_counter = 0
             self.start = left.start
             self.end = right.end
-        
-        # (1)
-        """
-        if orig_text:            
-            self.text = orig_text[self.start:self.end].strip()
+
+        if orig_text:
+            self.text = orig_text[self.start:self.end + 1].strip()
         else:
             self.text = text.strip()
-        """
-        # (2) for gold tree parsing
-        if self.left:
-            self.text = ' '.join([self.left.text, self.right.text])
-        else:
-            self.text = orig_text[self.start:self.end].strip()
-        
-    
+
     def __str__(self):
-        return f"id: {self.id}\ntext: {self.text}\nrelation: {self.relation}\nleft: {self.left.text if self.left else None}\nright: {self.right.text if self.right else None}\nstart: {self.start}\nend: {self.end}"
+        result = f"id: {self.id}\n"
+        result += f"text: {self.text}\n"
+        result += f"proba: {self.proba}\n"
+        result += f"relation: {self.relation}\n"
+        result += f"nuclearity: {self.nuclearity}\n"
+        result += f"left: {self.left.text if self.left else None}\n"
+        result += f"right: {self.right.text if self.right else None}\n"
+        result += f"start: {self.start}\n"
+        result += f"end: {self.end}"
+        return result
