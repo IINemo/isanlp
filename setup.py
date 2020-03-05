@@ -27,7 +27,7 @@ setup(
     description='ISA open-souce experimental library for natural language processing (NLP). Implements and wraps many linguistic parsers.',
     author='ISA RAS',
     author_email='',
-    packages=['isanlp', 'isanlp.ru', 'isanlp.en'],
+    packages=['isanlp', 'isanlp.ru', 'isanlp.en', 'isanlp.utils'],
 #    packages=['isanlp'] + ['isanlp.' + p for p in find_packages('isanlp')],
     include_package_data=True,
     zip_safe=False,
