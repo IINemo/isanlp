@@ -17,7 +17,7 @@ class DiscourseUnit:
         self.right = right
         self.relation = relation
         self.nuclearity = nuclearity
-        self.proba = str(proba)
+        self.proba = proba
         self.start = start
         self.end = end
 

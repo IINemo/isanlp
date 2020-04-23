@@ -59,7 +59,7 @@ def convert_discourse_unit(du):
                                     end=du.end,
                                     relation=du.relation,
                                     nuclearity=du.nuclearity,
-                                    proba=du.proba
+                                    proba=str(du.proba)
                                    )
     
     return pb_rst.DiscourseUnit(id=du.id, 
@@ -70,7 +70,7 @@ def convert_discourse_unit(du):
                             end=du.end,
                             relation=du.relation,
                             nuclearity=du.nuclearity,
-                            proba=du.proba
+                            proba=str(du.proba)
                            )
 
 def convert_annotation(ling_ann):
