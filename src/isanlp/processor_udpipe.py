@@ -6,7 +6,6 @@ from .annotation_repr import CSentence
 
 class ProcessorUDPipe:
     """Wrapper around UDPipe - Trainable pipeline library.
-
     Performs:
     1. Tokenization.
     2. Tagging.
@@ -29,6 +28,9 @@ class ProcessorUDPipe:
             if not self.model:
                 sys.stderr.write('Cannot load model from file "%s"\n' % self._model_path)
 
+            if self._enable_parser and not self._enable_tagger:
+                self._enable_tagger = True
+                
             self.tagger = Pipeline.DEFAULT if self._enable_tagger else Pipeline.NONE
             self.parser = Pipeline.DEFAULT if self._enable_parser else Pipeline.NONE
             self.error = ProcessingError()
@@ -36,12 +38,10 @@ class ProcessorUDPipe:
 
     def __call__(self, *argv):
         """Performs tokenization, tagging, lemmatizing and parsing.
-
         Args:
             text(str): text. OR
             tokens(list): List of Token objects.
             sentences(list): List of Sentence objects.
-
         Returns:
             Dictionary that contains:
             1. tokens - list of objects Token.
@@ -70,6 +70,7 @@ class ProcessorUDPipe:
             return sys.stderr.write('\n')
 
         annotation = self.convert_conll(text, udpipe_result)
+        
         return annotation
 
     def process_tokenized(self, tokens, sentences):
@@ -96,17 +97,18 @@ class ProcessorUDPipe:
     def convert_conll(self, text, udpipe_result):
         annotation = self.converter_conll(udpipe_result)
 
-        if self.tagger == Pipeline.NONE:
-            for key in ('lemma', 'postag'):
+        if self._enable_tagger:
+            for sent_lemma in annotation['lemma']:
+                for i in range(len(sent_lemma)):
+                    sent_lemma[i] = sent_lemma[i].lower()
+                    
+        else:
+            for key in ('lemma', 'postag', 'morph'):
                 annotation.pop(key, None)
 
-        if self.parser == Pipeline.NONE:
-            for key in ('syntax_dep_tree', 'postag'):
+        if not self._enable_parser:
+            for key in ('syntax_dep_tree',):
                 annotation.pop(key, None)
-
-        for sent_lemma in annotation['lemma']:
-            for i in range(len(sent_lemma)):
-                sent_lemma[i] = sent_lemma[i].lower()
 
         annotation['sentences'] = self.converter_conll.sentence_split(annotation['form'])
         annotation['tokens'] = self.converter_conll.get_tokens(text, annotation['form'])
