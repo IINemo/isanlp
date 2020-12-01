@@ -3,7 +3,7 @@ from nltk.tokenize import RegexpTokenizer
 import string
 import re
 
-from ..annotation import Token
+from annotation import Token
 
 _ru_abbrevs = [
     r'акад\.',
@@ -134,6 +134,7 @@ _ru_abbrevs = [
     r'д\. о\.',
     r'д\. п\.',
     r'д\. т\. н\.',
+    r'д\. э\. н\.',
     r'д\. ф\. н\.',
     r'д\. ф\. м\. н\.',
     r'д\. х\. н\.',
@@ -219,13 +220,9 @@ _ru_abbrevs = [
     r'кв\.',
     r'ква\.',
     r'квт\.',
-    r'к\. м\. н\.',
-    r'к\. х\. н\.',
-    r'к\. т\. н\.',
-    r'к\.м\.н\.',
-    r'к\.х\.н\.',
-    r'к\.т\.н\.',
-    r'к\. ф\.-м\. н\.',
+    r'канд\.',
+    r'к\. ?[а-я]\. ?н\.?',
+    r'к\. ?ф\.-м\. ?н\.?',
     r'кг\.',
     r'кгс\.',
     r'кгц\.',
@@ -290,6 +287,7 @@ _ru_abbrevs = [
     r'пл\.',
     r'р\.',
     r'рис\.',
+    r'с\.',
     r'стр\.',
     r'сокр\.',
     r'ст\.н\.с\.',
@@ -310,20 +308,28 @@ _ru_abbrevs = [
     r'франц\.',
     r'ч\.',
     r'чел\.',
+    r'\d{3,4}-\d{3,4}',
     r'\d?\d\.\d\d\.\d\d(?:\d\d)',
-    r'\w\.\w\.'
+    r'\w\.\w\.',
+    r'tl;tr;?',
+    r'spin-код',
+    r'яндекс.\w+',
 ]
 
-_ru_rules = [u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}', #e-mail
-         u'(?:[01]?[0-9]|2[0-4]):[0-5][0-9]', # times
-         u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)', # urls
-         u'[\w\.\-]+\.(?:com|org|net)', # url2
-         u'--',
-         u'\.\.\.',
-         u'\d+\.\d+',
-         u'[' + string.punctuation + u']',
-         u'[а-яА-ЯёЁa-zA-Z0-9]+',
-         u'\S']
+_ru_rules = [
+    u'https?:[^ \t\n]+[^\.! \t\n]',
+    u'www\.[^ \t\n]+[^\.!\? \t\n]',
+    u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}', #e-mail
+    u'(?:[01]?[0-9]|2[0-4]):[0-5][0-9]', # times
+    u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)', # urls
+    #u'(https?:\/\/)?([^\/\s]+\/)([^ ]*)(?:com|org|net|html)',
+    u'--',
+    u'\/\/',
+    u'\.\.\.',
+    u'[\d\.\/]+[^\.]',
+    u'[' + string.punctuation + u']',
+    u'[а-яА-ЯёЁa-zA-Z0-9]+',
+    u'\S']
 
 
 #_ru_regex = u'|'.join(_ru_abbrevs + _en_abbrevs + _ru_rules)

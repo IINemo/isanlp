@@ -1,9 +1,11 @@
 from . import annotation_pb2 as pb
+from . import annotation_rst_pb2 as pb_rst
 from . import annotation as ann
+from . import annotation_rst as ann_rst
 from google.protobuf.any_pb2 import Any
 
 
-def get_pb_type(pb_ann):
+def get_pb_type(pb_ann):    
     if pb_ann.Is(pb.AnnotationList.DESCRIPTOR):
         return pb.AnnotationList
     elif pb_ann.Is(pb.AnnotationMap.DESCRIPTOR):
@@ -26,6 +28,8 @@ def get_pb_type(pb_ann):
         return pb.Event
     elif pb_ann.Is(pb.TaggedSpan.DESCRIPTOR):
         return pb.TaggedSpan
+    elif pb_ann.Is(pb_rst.DiscourseUnit.DESCRIPTOR):
+        return pb_rst.DiscourseUnit
     else:
         raise TypeError()
 
@@ -72,6 +76,9 @@ def convert_annotation(pb_ann):
     elif obj.DESCRIPTOR == pb.Event.DESCRIPTOR:
         return ann.Event(pred = convert_tuple(obj.pred), 
                          args = convert_list(obj.args))
+    elif obj.DESCRIPTOR == pb_rst.DiscourseUnit.DESCRIPTOR:
+        if not obj.relation:
+            return None
+        return ann_rst.DiscourseUnit(id=obj.id, left=convert_annotation(obj.left), right=convert_annotation(obj.right), text=obj.text, start=obj.start, end=obj.end, relation=obj.relation, nuclearity=obj.nuclearity, proba=float(obj.proba))
     else:
         raise TypeError()
-    

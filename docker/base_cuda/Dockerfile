@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y git curl wget zlib1g-dev libssl-dev \
                                          build-essential libsqlite3-dev \
                                          libicu-dev locales libbz2-dev
 
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH}
+
 # Python 3.6
 RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 ENV PYENV_ROOT /root/.pyenv

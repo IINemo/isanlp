@@ -49,7 +49,13 @@ class ProcessorPolyglot:
             String that represents language code ("ru", "en").
         """
         
-        return Text(text).language.code
+        from langdetect import detect
+        code = detect(text)
+        
+        if code not in ('ru', 'en'):
+            return Text(text).language.code
+        
+        return code
     
     def tokenize(self, text):
         """Performs tokenization of text.

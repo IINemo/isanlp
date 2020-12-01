@@ -3,6 +3,9 @@
 from . import annotation_pb2 as pb
 from . import annotation as ann
 from google.protobuf.any_pb2 import Any
+from . import annotation_rst_pb2 as pb_rst
+from . import annotation_rst as ann_rst
+import sys
 
 
 def convert_map(mp):
@@ -46,6 +49,29 @@ def convert_event(event):
     return pb.Event(pred = convert_tuple(event.pred), 
                     args = convert_list(event.args))
 
+def convert_discourse_unit(du):
+    if not du.left:
+        return pb_rst.DiscourseUnit(id=du.id,
+                                    left=pb_rst.DiscourseUnit(),
+                                    right=pb_rst.DiscourseUnit(),
+                                    text=du.text,
+                                    start=du.start,
+                                    end=du.end,
+                                    relation=du.relation,
+                                    nuclearity=du.nuclearity,
+                                    proba=str(du.proba)
+                                   )
+    
+    return pb_rst.DiscourseUnit(id=du.id, 
+                            left=convert_discourse_unit(du.left),
+                            right=convert_discourse_unit(du.right),
+                            text=du.text,
+                            start=du.start,
+                            end=du.end,
+                            relation=du.relation,
+                            nuclearity=du.nuclearity,
+                            proba=str(du.proba)
+                           )
 
 def convert_annotation(ling_ann):
     """Converts basic annotations to protobuf structures."""
@@ -76,7 +102,8 @@ def convert_annotation(ling_ann):
                                  tag = ling_ann.tag)
     elif type(ling_ann) is ann.Event:
         return convert_event(ling_ann)
+    elif type(ling_ann) is ann_rst.DiscourseUnit:
+        return convert_discourse_unit(ling_ann)
     else:
-        print(type(ling_ann))
+        print(f"WRONG TYPE: {type(ling_ann)}; EXPECTED {ann_rst.DiscourseUnit}", file=sys.stderr)
         raise TypeError()
-        
