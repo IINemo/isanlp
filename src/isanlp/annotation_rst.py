@@ -51,32 +51,23 @@ class DiscourseUnit:
 
 class Segment:
     def __init__(self, _id, parent, relname, text):
-        self.id = _id
-        self.parent = parent
+        self.id = _id + 1
+        self.parent = parent + 1
         self.relname = relname
         self.text = text
 
     def __str__(self):
-        if self.parent:
+        if self.parent != -1:
             return f'<segment id="{self.id}" parent="{self.parent}" relname="{self.relname}">{self.text}</segment>'
 
         return f'<segment id="{self.id}" relname="{self.relname}">{self.text}</segment>'
 
 
-class GroupCreator:
-    def __init__(self, _id):
-        self._id = _id
-
-    def __call__(self, type, parent, relname):
-        self._id += 1
-        return Group(self._id, type, parent, relname)
-
-
 class Group:
     def __init__(self, _id, type, parent, relname):
-        self.id = _id
+        self.id = _id + 1
         self.type = type
-        self.parent = parent
+        self.parent = parent + 1
         self.relname = relname
 
     def __str__(self):
@@ -84,16 +75,18 @@ class Group:
 
 
 class Root(Group):
-    def __init__(self, _id):
-        Group.__init__(self, _id, type="span", parent=-1, relname="span")
+    def __init__(self, _id, type="span"):
+        Group.__init__(self, _id, type=type, parent=-1, relname="span")
 
     def __str__(self):
         return f'<group id="{self.id}" type="{self.type}"/>'
 
 
 class Exporter:
-    def __init__(self, encoding='cp1251'):
+    def __init__(self, encoding='cp1251', verbose=False):
         self._encoding = encoding
+        self.verbose = verbose
+        self.max_id = 0
 
     def __call__(self, tree, filename):
 
@@ -104,7 +97,7 @@ class Exporter:
             fo.write('</rst>')
 
     def compile_relation_set(self, tree):
-        result = ['_'.join([tree.relation, tree.nuclearity])]
+        result = ['_'.join([tree.relation, tree.nuclearity])] + ['antithesis_NN']
         if not tree.left:
             return result
         if tree.left.left:
@@ -129,7 +122,15 @@ class Exporter:
 
         return result
 
-    def get_groups_and_edus(self, tree):
+    def print_log(self, log):
+        if self.verbose:
+            print(log)
+
+    def get_max_id(self):
+        self.max_id += 1
+        return self.max_id
+
+    def get_groups_and_edus(self, tree, terminal=False):
         groups = []
         edus = []
 
@@ -139,19 +140,19 @@ class Exporter:
 
         if not tree.left.left:
             if tree.nuclearity == "SN":
-                edus.append(Segment(tree.left.id, tree.right.id, tree.relation, tree.left.text))
+                edus.append(Segment(tree.left.id, parent=tree.right.id, relname=tree.relation, text=tree.left.text))
             elif tree.nuclearity == "NS":
-                edus.append(Segment(tree.left.id, tree.id, 'span', tree.left.text))
+                edus.append(Segment(tree.left.id, parent=tree.id, relname='span', text=tree.left.text))
             else:
-                edus.append(Segment(tree.left.id, tree.id, tree.relation, tree.left.text))
+                edus.append(Segment(tree.left.id, parent=tree.id, relname=tree.relation, text=tree.left.text))
+
         else:
             if tree.nuclearity == "SN":
-                groups.append(Group(tree.left.id, 'span', tree.right.id, tree.relation))
+                groups.append(Group(tree.left.id, type='span', parent=tree.right.id, relname=tree.relation))
             elif tree.nuclearity == "NS":
-                groups.append(Group(tree.left.id, 'span', tree.id, 'span'))
+                groups.append(Group(tree.left.id, type='span', parent=tree.id, relname='span'))
             else:
-                groups.append(Group(tree.left.id, 'span', tree.id, tree.relation))
-                # groups.append(Group(tree.left.id, 'multinuc', tree.id, tree.relation))
+                groups.append(Group(tree.left.id, type='multinuc', parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.left)
             groups += _groups
@@ -159,32 +160,35 @@ class Exporter:
 
         if not tree.right.left:
             if tree.nuclearity == "SN":
-                edus.append(Segment(tree.right.id, tree.id, 'span', tree.right.text))
+                edus.append(Segment(tree.right.id, parent=tree.id, relname='span', text=tree.right.text))
             elif tree.nuclearity == "NS":
-                edus.append(Segment(tree.right.id, tree.left.id, tree.relation, tree.right.text))
+                edus.append(Segment(tree.right.id, parent=tree.left.id, relname=tree.relation, text=tree.right.text))
             else:
-                edus.append(Segment(tree.right.id, tree.id, tree.relation, tree.right.text))
+                edus.append(Segment(tree.right.id, parent=tree.id, relname=tree.relation, text=tree.right.text))
 
         else:
             if tree.nuclearity == "SN":
-                groups.append(Group(tree.right.id, 'span', tree.id, 'span'))
+                groups.append(Group(tree.right.id, type='multinuc', parent=tree.id, relname='span'))
             elif tree.nuclearity == "NS":
-                groups.append(Group(tree.right.id, 'span', tree.left.id, tree.relation))
+                groups.append(Group(tree.right.id, type='span', parent=tree.left.id, relname=tree.relation))
             else:
-                groups.append(Group(tree.right.id, 'span', tree.id, tree.relation))
-                # groups.append(Group(tree.right.id, 'multinuc', tree.id, tree.relation))
+                groups.append(Group(tree.right.id, type='span', parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.right)
             groups += _groups
             edus += _edus
 
+        if terminal:
+            if len(edus) > 1:
+                if tree.nuclearity == "NN":
+                    groups.append(Root(tree.id, type='multinuc'))
+                else:
+                    groups.append(Root(tree.id))
+
         return groups, edus
 
     def make_body(self, tree):
-        groups, edus = self.get_groups_and_edus(tree)
-        if len(edus) > 1:
-            groups.append(Root(tree.id))
-
+        groups, edus = self.get_groups_and_edus(tree, terminal=True)
         result = '\t<body>\n'
         for edu in edus + groups:
             result += '\t\t' + str(edu) + '\n'
@@ -194,9 +198,9 @@ class Exporter:
 
 
 class ForestExporter:
-    def __init__(self, encoding='cp1251'):
+    def __init__(self, encoding='cp1251', verbose=False):
         self._encoding = encoding
-        self._tree_exporter = Exporter(self._encoding)
+        self._tree_exporter = Exporter(self._encoding, verbose=verbose)
 
     def __call__(self, trees, filename):
 
@@ -231,11 +235,17 @@ class ForestExporter:
 
     def make_body(self, trees):
         groups, edus = [], []
+        roots = []
 
         for tree in trees:
-            _groups, _edus = self._tree_exporter.get_groups_and_edus(tree)
-            if len(_edus) > 1:
-                _groups.append(Root(tree.id))
+            _groups, _edus = self._tree_exporter.get_groups_and_edus(tree, terminal=True)
+
+            if len(edus) > 1:
+                if tree.nuclearity == "NN":
+                    roots.append(Root(tree.id, type='multinuc'))
+                else:
+                    roots.append(Root(tree.id))
+
             groups += _groups
             edus += _edus
 
