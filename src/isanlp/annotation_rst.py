@@ -135,7 +135,7 @@ class Exporter:
         edus = []
 
         if not tree.left:
-            edus.append(Segment(tree.id, parent=None, relname='antithesis', text=tree.text))
+            edus.append(Segment(tree.id, parent=-2, relname='antithesis', text=tree.text))
             return groups, edus
 
         if not tree.left.left:
