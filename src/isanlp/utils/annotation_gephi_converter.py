@@ -68,18 +68,18 @@ class AnnotationGephiConverter:
                 if new_edge not in edges:
                     edges.append(new_edge)
 
-                if self._srl:
-                    for srlannot in annot['srl'][i]:
-                        source_lemma = annot['lemma'][i][srlannot.pred[0]].lower()
-                        if source_lemma in nodes:
-                            source = nodes.index(source_lemma)
-                            for arg in srlannot.args:
-                                target_lemma = annot['lemma'][i][arg.begin].lower()
-                                if target_lemma in nodes:
-                                    target = nodes.index(target_lemma)
-                                    new_edge = GeEdge(source=source, target=target, kind='sem', label=arg.tag)
-                                    if new_edge not in edges:
-                                        edges.append(new_edge)
+            if self._srl:
+                for srlannot in annot['srl'][i]:
+                    source_lemma = annot['lemma'][i][srlannot.pred[0]].lower()
+                    if source_lemma in nodes:
+                        source = nodes.index(source_lemma)
+                        for arg in srlannot.args:
+                            target_lemma = annot['lemma'][i][arg.begin].lower()
+                            if target_lemma in nodes:
+                                target = nodes.index(target_lemma)
+                                new_edge = GeEdge(source=source, target=target, kind='sem', label=arg.tag)
+                                if new_edge not in edges:
+                                    edges.append(new_edge)
 
         dfnodes = pd.DataFrame({
             'Label': nodes,
