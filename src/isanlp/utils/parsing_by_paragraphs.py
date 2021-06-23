@@ -9,7 +9,7 @@ def parse_by_paragraphs(text, ppl):
         sentences = []
         start = 0
 
-        key = [key for key in annotation.keys() if key not in ['text', 'tokens', 'sentences'][0]
+        key = [key for key in annotation.keys() if key not in ['text', 'tokens', 'sentences']][0]
         for sentence in annotation[key]:
             sentences.append(Sentence(start, start+len(sentence)))
             start += len(sentence)
