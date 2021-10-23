@@ -56,7 +56,7 @@ class ProcessorDeeppavlovSyntax:
 
     def process_tokenized(self, tokens, sentences):
         predictions = self.model(self.prepare_tokenized_input(tokens, sentences))
-        annotation = proc.converter_conll('\n\n'.join(predictions))
+        annotation = self.converter_conll('\n\n'.join(predictions))
         lemma_result = annotation['lemma']
         postag_result = annotation['postag']
         morph_result = annotation['morph']
