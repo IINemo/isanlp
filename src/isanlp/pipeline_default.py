@@ -5,9 +5,6 @@ from .processor_polyglot import ProcessorPolyglot
 from .pipeline_common import PipelineCommon
 
 
-
-
-
 def create_pipeline(delay_init = False):
     ru_ppl = dflt_ru.create_pipeline(delay_init)
     _ppl_cond = PipelineConditional((lambda _, lang: lang),

@@ -1,9 +1,9 @@
-#from ..en.processor_tokenizer_nltk_en import _en_abbrevs
-from nltk.tokenize import RegexpTokenizer
-import string
+# from ..en.processor_tokenizer_nltk_en import _en_abbrevs
 import re
+import string
 
-from annotation import Token
+from ..annotation import Token
+from nltk.tokenize import RegexpTokenizer
 
 _ru_abbrevs = [
     r'акад\.',
@@ -319,10 +319,10 @@ _ru_abbrevs = [
 _ru_rules = [
     u'https?:[^ \t\n]+[^\.! \t\n]',
     u'www\.[^ \t\n]+[^\.!\? \t\n]',
-    u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}', #e-mail
-    u'(?:[01]?[0-9]|2[0-4]):[0-5][0-9]', # times
-    u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)', # urls
-    #u'(https?:\/\/)?([^\/\s]+\/)([^ ]*)(?:com|org|net|html)',
+    u'[-\w.]+@(?:[A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}',  # e-mail
+    u'(?:[01]?[0-9]|2[0-4]):[0-5][0-9]',  # times
+    u'(?:mailto:|(?:news|http|https|ftp|ftps)://)[\w\.\-]+|^(?:www(?:\.[\w\-]+)+)',  # urls
+    # u'(https?:\/\/)?([^\/\s]+\/)([^ ]*)(?:com|org|net|html)',
     u'--',
     u'\/\/',
     u'\.\.\.',
@@ -331,8 +331,7 @@ _ru_rules = [
     u'[а-яА-ЯёЁa-zA-Z0-9]+',
     u'\S']
 
-
-#_ru_regex = u'|'.join(_ru_abbrevs + _en_abbrevs + _ru_rules)
+# _ru_regex = u'|'.join(_ru_abbrevs + _en_abbrevs + _ru_rules)
 _ru_regex = u'|'.join(_ru_abbrevs + _ru_rules)
 
 
@@ -341,19 +340,16 @@ class ProcessorTokenizerRu:
     
     Wrapper around NLTK RegexpTokenizer. Supports Russian abbreviations.
     """
-    
-    def __init__(self, delay_init = False):
+
+    def __init__(self, delay_init=False):
         self._proc = None
         if not delay_init:
             self.init()
-
 
     def init(self):
         if self._proc is None:
             self._proc = RegexpTokenizer(_ru_regex, flags=re.IGNORECASE)
 
-
     def __call__(self, text):
         assert self._proc
-        return [Token(text[start : end], start, end) for (start, end) in self._proc.span_tokenize(text)]
-    
+        return [Token(text[start: end], start, end) for (start, end) in self._proc.span_tokenize(text)]

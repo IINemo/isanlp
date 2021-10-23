@@ -1,7 +1,7 @@
-from ..annotation import Token
 from nltk.tokenize import RegexpTokenizer
-from ..ru.processor_tokenizer_ru import _ru_rules
 
+from ..annotation import Token
+from ..ru.processor_tokenizer_ru import _ru_rules
 
 _en_abbrevs = [
     r'dr',
@@ -25,7 +25,7 @@ class ProcessorTokenizerNltkEn:
     
     Wrapper around NLTK RegexpTokenizer.
     """
-    
+
     def __init__(self, delay_init=False, *args, **kwargs):
         self._proc = None
         if not delay_init:
@@ -46,5 +46,5 @@ class ProcessorTokenizerNltkEn:
             List of Token objects.
         """
 
-        return [Token(text[start : end], start, end) 
+        return [Token(text[start: end], start, end)
                 for (start, end) in self._proc.span_tokenize(text)]

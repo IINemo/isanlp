@@ -1,4 +1,5 @@
 import nltk
+
 from ..annotation_repr import CSentence
 
 
@@ -7,7 +8,7 @@ class ProcessorPostaggerNltkEn:
     
     Simple wrapper of NLTK postagger.
     """
-    
+
     def __call__(self, tokens, sentences):
         """Performs postagging.
         
@@ -19,9 +20,9 @@ class ProcessorPostaggerNltkEn:
             List of lists (sentences) of strings that represent postag in 
             Penn Treebank format.
         """
-        
+
         result = []
         for sent in sentences:
             result.append([e[1] for e in nltk.pos_tag([word.text for word in CSentence(tokens, sent)])])
-            
+
         return result
