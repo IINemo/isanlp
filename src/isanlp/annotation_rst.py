@@ -139,7 +139,7 @@ class Exporter:
         edus = []
 
         if not tree.left:
-            edus.append(Segment(tree.id, parent=-2, relname='antithesis', text=tree.text))
+            edus.append(Segment(tree.id, parent=-2, relname='', text=tree.text))
             return groups, edus
 
         if not tree.left.left:
@@ -152,9 +152,11 @@ class Exporter:
 
         else:
             if tree.nuclearity == "SN":
-                groups.append(Group(tree.left.id, type='span', parent=tree.right.id, relname=tree.relation))
+                _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
+                groups.append(Group(tree.left.id, type=_type, parent=tree.right.id, relname=tree.relation))
             elif tree.nuclearity == "NS":
-                groups.append(Group(tree.left.id, type='span', parent=tree.id, relname='span'))
+                _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
+                groups.append(Group(tree.left.id, type=_type, parent=tree.id, relname='span'))
             else:
                 groups.append(Group(tree.left.id, type='multinuc', parent=tree.id, relname=tree.relation))
 
@@ -172,9 +174,11 @@ class Exporter:
 
         else:
             if tree.nuclearity == "SN":
-                groups.append(Group(tree.right.id, type='multinuc', parent=tree.id, relname='span'))
+                _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
+                groups.append(Group(tree.right.id, type=_type, parent=tree.id, relname='span'))
             elif tree.nuclearity == "NS":
-                groups.append(Group(tree.right.id, type='span', parent=tree.left.id, relname=tree.relation))
+                _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
+                groups.append(Group(tree.right.id, type=_type, parent=tree.left.id, relname=tree.relation))
             else:
                 groups.append(Group(tree.right.id, type='multinuc', parent=tree.id, relname=tree.relation))
 
