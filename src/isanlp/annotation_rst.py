@@ -60,7 +60,7 @@ class Segment:
         if self.parent != -1:
             return f'<segment id="{self.id}" parent="{self.parent}" relname="{self.relname}">{self.text}</segment>'
 
-        return f'<segment id="{self.id}" relname="{self.relname}">{self.text}</segment>'
+        return f'<segment id="{self.id}">{self.text}</segment>'
 
 
 class Group:
@@ -107,9 +107,13 @@ class Exporter:
 
         return result
 
-    def make_header(self, tree):
-        relations = list(set(self.compile_relation_set(tree)))
-        relations = [value if value != "elementary__" else "antithesis_NN" for value in relations]
+    def make_header(self, tree, whole_set=False):
+        if whole_set:
+            relations = ['preparation', 'cause-effect', 'solutionhood', 'condition', 'sequence', 'same-unit', 'background', 'interpretation-evaluation', 'contrast',
+                         'evidence', 'joint', 'elaboration', 'purpose', 'attribution', 'concession', 'restatement', 'comparison'].sorted()
+        else:
+            relations = list(set(self.compile_relation_set(tree)))
+            relations = [value if value != "elementary__" else "antithesis_NN" for value in relations]
 
         result = '\t<header>\n'
         result += '\t\t<relations>\n'
@@ -172,7 +176,7 @@ class Exporter:
             elif tree.nuclearity == "NS":
                 groups.append(Group(tree.right.id, type='span', parent=tree.left.id, relname=tree.relation))
             else:
-                groups.append(Group(tree.right.id, type='span', parent=tree.id, relname=tree.relation))
+                groups.append(Group(tree.right.id, type='multinuc', parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.right)
             groups += _groups
