@@ -158,7 +158,7 @@ class Exporter:
                 _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
                 groups.append(Group(tree.left.id, type=_type, parent=tree.id, relname='span'))
             else:
-                groups.append(Group(tree.left.id, type='multinuc', parent=tree.id, relname=tree.relation))
+                groups.append(Group(tree.left.id, type='span', parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.left)
             groups += _groups
@@ -180,7 +180,7 @@ class Exporter:
                 _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
                 groups.append(Group(tree.right.id, type=_type, parent=tree.left.id, relname=tree.relation))
             else:
-                groups.append(Group(tree.right.id, type='multinuc', parent=tree.id, relname=tree.relation))
+                groups.append(Group(tree.right.id, type='span', parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.right)
             groups += _groups
