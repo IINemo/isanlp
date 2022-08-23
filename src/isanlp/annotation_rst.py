@@ -83,7 +83,7 @@ class Root(Group):
 
 
 class Exporter:
-    def __init__(self, encoding='cp1251', verbose=False):
+    def __init__(self, encoding='utf8', verbose=False):
         self._encoding = encoding
         self.verbose = verbose
         self.max_id = 0
@@ -151,14 +151,13 @@ class Exporter:
                 edus.append(Segment(tree.left.id, parent=tree.id, relname=tree.relation, text=tree.left.text))
 
         else:
+            _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
             if tree.nuclearity == "SN":
-                _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
                 groups.append(Group(tree.left.id, type=_type, parent=tree.right.id, relname=tree.relation))
             elif tree.nuclearity == "NS":
-                _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
                 groups.append(Group(tree.left.id, type=_type, parent=tree.id, relname='span'))
             else:
-                groups.append(Group(tree.left.id, type='span', parent=tree.id, relname=tree.relation))
+                groups.append(Group(tree.left.id, type=_type, parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.left)
             groups += _groups
@@ -173,14 +172,13 @@ class Exporter:
                 edus.append(Segment(tree.right.id, parent=tree.id, relname=tree.relation, text=tree.right.text))
 
         else:
+            _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
             if tree.nuclearity == "SN":
-                _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
                 groups.append(Group(tree.right.id, type=_type, parent=tree.id, relname='span'))
             elif tree.nuclearity == "NS":
-                _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
                 groups.append(Group(tree.right.id, type=_type, parent=tree.left.id, relname=tree.relation))
             else:
-                groups.append(Group(tree.right.id, type='span', parent=tree.id, relname=tree.relation))
+                groups.append(Group(tree.right.id, type=_type, parent=tree.id, relname=tree.relation))
 
             _groups, _edus = self.get_groups_and_edus(tree.right)
             groups += _groups
