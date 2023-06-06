@@ -1,10 +1,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/IINemo/isanlp_srl_framebank/blob/master/LICENSE)
-![Python 3.7](https://img.shields.io/badge/python-3.7-green.svg)
+![Python 3.9](https://img.shields.io/badge/python-3.9-green.svg)
 
 # Description
 
 ISANLP is a Python 3 library that encompasses several open-source natural language processing tools for English and Russian and provides a framework for running them locally as a single pipeline or in a distributed environment via RPC. It also provides an easy to deploy docker container inemo/isanlp for starting various types of workers.
-Current version 0.0.7
 
 **Warning** since version 0.0.5 compatibility is broken with old containers! When installing new version of the library you need to pull new containers or use 0.0.1 version of the library (old containers are also tagged as 0.0.1).
 
@@ -58,6 +57,9 @@ Fire indicates up-to-date recommended modules.
 
 - [IsaNLP RST](https://github.com/tchewik/isanlp_rst) RST-style discourse parser for Russian based on neural network models.
 
+#### Coreference Resolution
+- [CorefHD](https://github.com/tchewik/corefhd) Coreference resolution for Russian trained on RuCoCo-23 dataset.
+
 ### Additional modules
 
 - Preprocessors
@@ -71,7 +73,6 @@ Fire indicates up-to-date recommended modules.
 
 - English/Russian advanced neural network named entity recognition.
 - English/Russian sentiment analysis.
-- English/Russian anaphora resolution.
 
 # Usage
 
@@ -238,5 +239,4 @@ The IsaNLP library provides several core routines, processors, and models that d
 1. Expand documentation.
 2. Automatic tests.
 3. Sentiment analysis for English and Russian.
-4. Anaphora resolution for English and Russian.
-5. ~~Spacy wrapper.~~
+4. ~~Spacy wrapper.~~
