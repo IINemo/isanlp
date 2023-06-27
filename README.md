@@ -233,7 +233,7 @@ The IsaNLP library provides several core routines, processors, and models that d
 2. [isanlp_deep_srl](https://github.com/IINemo/isanlp_deep_srl) – the docker container [inemo/isanlp_deep_srl](https://hub.docker.com/r/inemo/isanlp_deep_srl/) with ready-to-use SRL service for English. The parser and models is created by [Deep SRL project](https://github.com/luheng/deep_srl) and adopted for IsaNLP framework.
 3. [isanlp_parser_conll2008](https://github.com/IINemo/isanlp_parser_conll2008/) – the docker container [inemo/isanlp_parser_conll2008](https://hub.docker.com/r/inemo/isanlp_parser_conll2008/) with ready-to-use dependency parsing service for English. The parser is based on MaltParser and CONLL-2008/2009 syntactic annotation (semantically rich). The model is developed by [Surdenau et al.](http://www.surdeanu.info/mihai/ensemble/)
 4. [docker-syntaxnet](https://github.com/IINemo/docker-syntaxnet) – the docker containers with Google's [SyntaxNet](https://github.com/tensorflow/models/tree/master/research/syntaxnet) for [English](https://hub.docker.com/r/inemo/syntaxnet_eng/), [Russian](https://hub.docker.com/r/inemo/syntaxnet_rus/), and [Italian](https://hub.docker.com/r/inemo/syntaxnet_ita/). The containers provides easy-to-use gRPC service for dependency parsing, pos-tagging, and morphology analysis.
-5. [Exactus Sem Vectors] (https://semvectors-doc-enc.readthedocs.io/ru/latest/index.html) - Semantic vectors for searching over long documents.
+5. [Exactus Sem Vectors](https://semvectors-doc-enc.readthedocs.io/ru/latest/index.html) - Semantic vectors for searching over long documents.
 
 # Roadmap:
 
