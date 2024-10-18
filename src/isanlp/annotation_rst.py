@@ -54,7 +54,11 @@ class Segment:
         self.id = _id + 1
         self.parent = parent + 1
         self.relname = relname
-        self.text = text
+        self.text = self._xmlize_edu(text)
+
+    @staticmethod
+    def _xmlize_edu(text):
+        return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
     def __str__(self):
         if self.parent != -1:
