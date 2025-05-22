@@ -114,24 +114,51 @@ class Exporter:
 
         return result
 
-    def make_header(self, tree, whole_set=False):
+    def make_header(self, tree, whole_set: bool = False) -> str:
         if whole_set:
-            relations = ['preparation', 'cause-effect', 'solutionhood', 'condition', 'sequence', 'same-unit', 'background', 'interpretation-evaluation', 'contrast',
-                         'evidence', 'joint', 'elaboration', 'purpose', 'attribution', 'concession', 'restatement', 'comparison'].sorted()
+            relations = sorted([
+                'preparation', 'cause-effect', 'solutionhood', 'condition',
+                'sequence', 'same-unit', 'background', 'interpretation-evaluation',
+                'contrast', 'evidence', 'joint', 'elaboration', 'purpose',
+                'attribution', 'concession', 'restatement', 'comparison'
+            ])
+            # add the type suffix you want to treat them with
+            relations = [f'{r}_NS' for r in relations]          # or _NN, as needed
         else:
-            relations = list(set(self.compile_relation_set(tree)))
-            relations = [value if value != "elementary__" else "antithesis_NN" for value in relations]
-
-        result = '\t<header>\n'
-        result += '\t\t<relations>\n'
+            raw = self.compile_relation_set(tree)
+            relations = [
+                'antithesis_NN' if r == 'elementary__' else r
+                for r in raw
+            ]
+    
+        rel_map = {}
         for rel in relations:
-            _relname, _type = rel.split('_')
-            _type = 'multinuc' if _type == 'NN' else 'rst'
-            result += f'\t\t\t<rel name="{_relname}" type="{_type}" />\n'
-        result += '\t\t</relations>\n'
-        result += '\t</header>\n'
-
-        return result
+            try:
+                name, suffix = rel.split('_')
+            except ValueError:          # ignore malformed entries
+                continue
+    
+            rel_type = 'multinuc' if suffix == 'NN' else 'rst'
+    
+            if name in rel_map:
+                if rel_type == 'multinuc':
+                    rel_map[name] = rel_type
+            else:
+                rel_map[name] = rel_type
+    
+        # Assemble the header in alphabetical order
+        lines = [
+            '\t<header>',
+            '\t\t<relations>'
+        ]
+        for name in sorted(rel_map):
+            lines.append(f'\t\t\t<rel name="{name}" type="{rel_map[name]}" />')
+        lines += [
+            '\t\t</relations>',
+            '\t</header>',
+            ''
+        ]
+        return '\n'.join(lines)
 
     def print_log(self, log):
         if self.verbose:
