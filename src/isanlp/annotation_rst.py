@@ -44,6 +44,9 @@ class DiscourseUnit:
         result += f"end: {self.end}"
         return result
 
+    def __repr__(self):
+        return f"(id={self.id}, start={self.start}, end={self.end})"
+
     def to_rs3(self, filename, encoding='utf8'):
         self._exporter = Exporter(encoding=encoding)
         self._exporter(self, filename)
