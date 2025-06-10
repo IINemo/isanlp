@@ -134,7 +134,8 @@ class Exporter:
         rel_map = {}
         for rel in relations:
             try:
-                name, suffix = rel.split('_')
+                name = '_'.join(rel.split('_')[:-1])
+                suffix = rel.split('_')[-1]
             except ValueError:          # ignore malformed entries
                 continue
     
