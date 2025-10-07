@@ -93,10 +93,8 @@ class Exporter:
     def __init__(self, encoding='utf8', verbose=False):
         self._encoding = encoding
         self.verbose = verbose
-        self.max_id = 0
 
     def __call__(self, tree, filename):
-
         with open(filename, 'w', encoding=self._encoding) as fo:
             fo.write('<rst>\n')
             fo.write(self.make_header(tree))
@@ -111,7 +109,6 @@ class Exporter:
             result += self.compile_relation_set(tree.left)
         if tree.right.left:
             result += self.compile_relation_set(tree.right)
-
         return result
 
     def make_header(self, tree, whole_set: bool = False) -> str:
@@ -122,61 +119,44 @@ class Exporter:
                 'contrast', 'evidence', 'joint', 'elaboration', 'purpose',
                 'attribution', 'concession', 'restatement', 'comparison'
             ])
-            # add the type suffix you want to treat them with
-            relations = [f'{r}_NS' for r in relations]          # or _NN, as needed
+            relations = [f'{r}_NS' for r in relations]
         else:
             raw = self.compile_relation_set(tree)
-            relations = [
-                'antithesis_NN' if r == 'elementary__' else r
-                for r in raw
-            ]
-    
+            relations = ['antithesis_NN' if r == 'elementary__' else r for r in raw]
+
         rel_map = {}
         for rel in relations:
-            try:
-                name = '_'.join(rel.split('_')[:-1])
-                suffix = rel.split('_')[-1]
-            except ValueError:          # ignore malformed entries
+            parts = rel.split('_')
+            if len(parts) < 2:
                 continue
-    
-            rel_type = 'multinuc' if suffix == 'NN' else 'rst'
-    
-            if name in rel_map:
-                if rel_type == 'multinuc':
-                    rel_map[name] = rel_type
-            else:
-                rel_map[name] = rel_type
-    
-        # Assemble the header in alphabetical order
-        lines = [
-            '\t<header>',
-            '\t\t<relations>'
-        ]
+            name, suffix = '_'.join(parts[:-1]), parts[-1]
+            rtype = 'multinuc' if suffix == 'NN' else 'rst'
+            rel_map[name] = 'multinuc' if (name in rel_map and rel_map[name] == 'multinuc') else rtype
+
+        lines = ['\t<header>', '\t\t<relations>']
         for name in sorted(rel_map):
             lines.append(f'\t\t\t<rel name="{name}" type="{rel_map[name]}" />')
-        lines += [
-            '\t\t</relations>',
-            '\t</header>',
-            ''
-        ]
+        lines += ['\t\t</relations>', '\t</header>', '']
         return '\n'.join(lines)
 
-    def print_log(self, log):
-        if self.verbose:
-            print(log)
-
-    def get_max_id(self):
-        self.max_id += 1
-        return self.max_id
+    def make_body(self, tree):
+        groups, edus = self.get_groups_and_edus(tree, terminal=True)
+        result = '\t<body>\n'
+        for edu in edus + groups:
+            result += '\t\t' + str(edu) + '\n'
+        result += '\t</body>\n'
+        return result
 
     def get_groups_and_edus(self, tree, terminal=False):
         groups = []
         edus = []
 
+        # Leaf node -> one segment, no groups
         if not tree.left:
             edus.append(Segment(tree.id, parent=-2, relname='', text=tree.text))
             return groups, edus
 
+        # Processing left child
         if not tree.left.left:
             if tree.nuclearity == "SN":
                 edus.append(Segment(tree.left.id, parent=tree.right.id, relname=tree.relation, text=tree.left.text))
@@ -184,7 +164,6 @@ class Exporter:
                 edus.append(Segment(tree.left.id, parent=tree.id, relname='span', text=tree.left.text))
             else:
                 edus.append(Segment(tree.left.id, parent=tree.id, relname=tree.relation, text=tree.left.text))
-
         else:
             _type = 'multinuc' if tree.left.nuclearity == "NN" else 'span'
             if tree.nuclearity == "SN":
@@ -193,11 +172,11 @@ class Exporter:
                 groups.append(Group(tree.left.id, type=_type, parent=tree.id, relname='span'))
             else:
                 groups.append(Group(tree.left.id, type=_type, parent=tree.id, relname=tree.relation))
-
             _groups, _edus = self.get_groups_and_edus(tree.left)
             groups += _groups
             edus += _edus
 
+        # Processing right child
         if not tree.right.left:
             if tree.nuclearity == "SN":
                 edus.append(Segment(tree.right.id, parent=tree.id, relname='span', text=tree.right.text))
@@ -205,7 +184,6 @@ class Exporter:
                 edus.append(Segment(tree.right.id, parent=tree.left.id, relname=tree.relation, text=tree.right.text))
             else:
                 edus.append(Segment(tree.right.id, parent=tree.id, relname=tree.relation, text=tree.right.text))
-
         else:
             _type = 'multinuc' if tree.right.nuclearity == "NN" else 'span'
             if tree.nuclearity == "SN":
@@ -214,12 +192,12 @@ class Exporter:
                 groups.append(Group(tree.right.id, type=_type, parent=tree.left.id, relname=tree.relation))
             else:
                 groups.append(Group(tree.right.id, type=_type, parent=tree.id, relname=tree.relation))
-
             _groups, _edus = self.get_groups_and_edus(tree.right)
             groups += _groups
             edus += _edus
 
         if terminal:
+            # Emit exactly one root group (no parent/relname) when there's more than one EDU
             if len(edus) > 1:
                 if tree.nuclearity == "NN":
                     groups.append(Root(tree.id, type='multinuc'))
@@ -227,15 +205,6 @@ class Exporter:
                     groups.append(Root(tree.id))
 
         return groups, edus
-
-    def make_body(self, tree):
-        groups, edus = self.get_groups_and_edus(tree, terminal=True)
-        result = '\t<body>\n'
-        for edu in edus + groups:
-            result += '\t\t' + str(edu) + '\n'
-        result += '\t</body>\n'
-
-        return result
 
 
 class ForestExporter:
