@@ -26,5 +26,5 @@ setup(
     include_package_data=True,
     zip_safe=False,
     package_dir={'': 'src'},
-    install_requires=['protobuf==3.18.3', 'grpcio']
+    install_requires=['protobuf==4.25.8', 'grpcio']
 )
