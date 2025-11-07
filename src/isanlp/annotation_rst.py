@@ -54,18 +54,18 @@ class DiscourseUnit:
         """
         Recursively clears the text attribute to save memory.
         """
-        self.text = ''  
-    
+        self.text = ''
+
         if self.left:
             self.left.clear_textfields()
-            
+
         if self.right:
             self.right.clear_textfields()
 
-     def fill_textfields(self, full_text):
+    def fill_textfields(self, full_text):
         """
         Recursively fills the text attribute of this unit and all its children using the provided full_text.
-        
+
         :param str full_text: The complete original text from which to extract spans.
         """
 
@@ -74,7 +74,7 @@ class DiscourseUnit:
 
         if self.left:
             self.left.fill_textfields(full_text)
-            
+
         if self.right:
             self.right.fill_textfields(full_text)
 
