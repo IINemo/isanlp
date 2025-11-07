@@ -1,6 +1,6 @@
 class DiscourseUnit:
     def __init__(self, id, left=None, right=None, text='', start=None, end=None,
-                 orig_text=None, relation='', nuclearity='', proba=1.):
+                 orig_text=None, relation='', nuclearity='', proba=None, entropy=None):
         """
         :param int id:
         :param DiscourseUnit left:
@@ -8,9 +8,10 @@ class DiscourseUnit:
         :param str text: (optional)
         :param int start: start position in original text
         :param int end: end position in original text
-        :param string relation: {the relation between left and right components | 'elementary' | 'root'}
+        :param string relation: {the relation between left and right components | 'elementary'}
         :param string nuclearity: {'NS' | 'SN' | 'NN'}
         :param float proba: predicted probability of the relation occurrence
+        :param float entropy: entropy of the relation occurrence prediction
         """
         self.id = id
         self.left = left
@@ -18,6 +19,7 @@ class DiscourseUnit:
         self.relation = relation
         self.nuclearity = nuclearity
         self.proba = proba
+        self.entropy = entropy
         self.start = start
         self.end = end
 
@@ -36,6 +38,7 @@ class DiscourseUnit:
         result = f"id: {self.id}\n"
         result += f"text: {self.text}\n"
         result += f"proba: {self.proba}\n"
+        result += f"entropy: {self.entropy}\n"
         result += f"relation: {self.relation}\n"
         result += f"nuclearity: {self.nuclearity}\n"
         result += f"left: {self.left.text if self.left else None}\n"
@@ -46,6 +49,34 @@ class DiscourseUnit:
 
     def __repr__(self):
         return f"(id={self.id}, start={self.start}, end={self.end})"
+
+    def clear_textfields(self):
+        """
+        Recursively clears the text attribute to save memory.
+        """
+        self.text = ''  
+    
+        if self.left:
+            self.left.clear_textfields()
+            
+        if self.right:
+            self.right.clear_textfields()
+
+     def fill_textfields(self, full_text):
+        """
+        Recursively fills the text attribute of this unit and all its children using the provided full_text.
+        
+        :param str full_text: The complete original text from which to extract spans.
+        """
+
+        if self.start is not None and self.end is not None:
+            self.text = full_text[self.start:self.end + 1].strip()
+
+        if self.left:
+            self.left.fill_textfields(full_text)
+            
+        if self.right:
+            self.right.fill_textfields(full_text)
 
     def to_rs3(self, filename, encoding='utf8'):
         self._exporter = Exporter(encoding=encoding)
